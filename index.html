@@ -1665,7 +1665,7 @@
             });
         }
         
-        // Login handler
+        // Login handler with proper persistence
         async function handleLogin() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
@@ -1678,16 +1678,21 @@
             
             showLoading();
             try {
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                currentUserEmail = email;
-                
+                // Set persistence based on "Stay Logged In" checkbox
                 if (stayLoggedIn) {
+                    // LOCAL persistence - stays logged in even after browser restart
+                    await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
                     localStorage.setItem('stayLoggedIn', 'true');
                     localStorage.setItem('userEmail', email);
                 } else {
+                    // SESSION persistence - logged out when tab/window is closed
+                    await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
                     localStorage.removeItem('stayLoggedIn');
                     localStorage.removeItem('userEmail');
                 }
+                
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                currentUserEmail = email;
                 
                 const userDoc = await db.collection('users').doc(getDocumentIdFromEmail(email)).get();
                 if (userDoc.exists) {
@@ -1762,11 +1767,12 @@
             });
         }
         
-        // Check for existing session
+        // Check for existing session (only for LOCAL persistence)
         async function checkExistingSession() {
             const stayLoggedIn = localStorage.getItem('stayLoggedIn') === 'true';
             const savedEmail = localStorage.getItem('userEmail');
             
+            // Only restore session if "Stay Logged In" was checked
             if (stayLoggedIn && savedEmail) {
                 const user = auth.currentUser;
                 if (user && user.email === savedEmail) {
@@ -1799,10 +1805,15 @@
             setupEventListeners();
             renderCityFilters();
             
+            // Set default persistence to SESSION (logout on tab close)
+            // This is the default behavior when "Stay Logged In" is not checked
+            await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+            
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     const restored = await checkExistingSession();
                     if (!restored) {
+                        // User logged in but no LOCAL persistence flag - treat as SESSION
                         document.getElementById('loginContainer').style.display = 'none';
                         document.getElementById('appContainer').style.display = 'flex';
                         currentUserEmail = user.email;
