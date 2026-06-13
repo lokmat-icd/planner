@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kol-ICD Planner - Web Dashboard</title>
+    
+    <!-- Firebase SDKs - Using compat versions for easier syntax -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: #0f0f12;
+            color: #e0e0e0;
+        }
+
+        /* Dark Theme Variables */
+        :root {
+            --bg-primary: #0f0f12;
+            --bg-secondary: #1a1a1f;
+            --bg-card: #25252d;
+            --bg-hover: #2a2a32;
+            --primary: #0077b6;
+            --primary-dark: #023e8a;
+            --success: #1cc88a;
+            --danger: #e74a3b;
+            --warning: #f6c23e;
+            --info: #0077b6;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --border: #3a3a42;
+        }
+
+        /* Login Container */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f0f12 0%, #1a1a1f 100%);
+        }
+
+        .login-card {
+            background: var(--bg-secondary);
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-title {
+            font-size: 32px;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 14px;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        /* Main App Container */
+        .app-container {
+            min-height: 100vh;
+            display: none;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: #0F1D4B;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .app-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            background: rgba(231, 74, 59, 0.2);
+            color: var(--danger);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: rgba(231, 74, 59, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* City Filter Row */
+        .city-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .city-btn {
+            padding: 8px 20px;
+            background: var(--bg-card);
+            border: none;
+            border-radius: 24px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+
+        .city-btn.active {
+            background: var(--primary);
+        }
+
+        .city-btn:hover:not(.active) {
+            background: var(--bg-hover);
+        }
+
+        /* Date Navigation */
+        .date-nav {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .date-nav-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .date-nav-btn:hover {
+            background: var(--bg-card);
+        }
+
+        .date-display {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .date-display .date {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .date-display .day {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Event Card */
+        .event-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .event-header h4 {
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .saved-badge {
+            color: var(--success);
+            font-size: 11px;
+        }
+
+        .event-input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .event-input-group input {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+        }
+
+        .event-input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .event-input-group button {
+            padding: 0 20px;
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .event-input-group button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Attendance Sections */
+        .attendance-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            background: #0F1D4B;
+            padding: 12px 16px;
+            border-radius: 12px 12px 0 0;
+            font-weight: bold;
+            color: white;
+        }
+
+        .attendance-table {
+            background: var(--bg-secondary);
+            border-radius: 0 0 12px 12px;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: grid;
+            background: var(--bg-card);
+            padding: 12px 16px;
+            font-weight: bold;
+            color: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-row {
+            display: grid;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .table-row:hover {
+            background: var(--bg-hover);
+        }
+
+        .table-row.has-exception {
+            background: #3d1f2d;
+        }
+
+        /* Grid layouts for different cities */
+        .grid-5cols {
+            grid-template-columns: 5fr 1fr 2fr 2fr;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: white;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1100;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Loading Spinner */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--bg-card);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Employee Properties Panel */
+        .properties-panel {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .properties-header {
+            background: #0F1D4B;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .properties-content {
+            display: none;
+            padding: 20px;
+        }
+
+        .properties-content.active {
+            display: block;
+        }
+
+        .employee-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .employee-name {
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .employee-fields {
+            display: grid;
+            gap: 12px;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .field-row label {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .field-row input, .field-row select {
+            padding: 8px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: white;
+        }
+
+        .save-all-btn {
+            margin-top: 16px;
+            width: auto;
+            padding: 10px 20px;
+        }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .fab:hover {
+            transform: scale(1.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 12px;
+            }
+            
+            .table-header, .table-row {
+                font-size: 12px;
+            }
+            
+            .field-row {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div id="loginContainer" class="login-container">
+        <div class="login-card">
+            <div class="login-title">Kol-ICD Planner</div>
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="loginEmail" placeholder="user@example.com">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="••••••">
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="stayLoggedIn">
+                <label>Stay Logged In</label>
+            </div>
+            <button class="btn btn-primary" id="loginBtn">LOGIN</button>
+            <div id="loginError" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="appContainer" class="app-container">
+        <div class="top-bar">
+            <div class="app-title">Kol-ICD Planner</div>
+            <div class="top-bar-actions">
+                <button class="icon-btn" id="propertiesBtn" style="display: none;">⚙️</button>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- City Filters -->
+            <div class="city-filters" id="cityFilters"></div>
+
+            <!-- Date Navigation -->
+            <div class="date-nav">
+                <button class="date-nav-btn" id="prevDateBtn">◀</button>
+                <div class="date-display" id="datePickerBtn">
+                    <div class="date" id="currentDate">--/--/----</div>
+                    <div class="day" id="currentDay">-------</div>
+                </div>
+                <button class="date-nav-btn" id="nextDateBtn">▶</button>
+            </div>
+
+            <!-- Event Card -->
+            <div class="event-card" id="eventCard">
+                <div class="event-header">
+                    <h4 id="eventCityLabel">Event for Kolhapur</h4>
+                    <span class="saved-badge" id="savedBadge" style="display: none;">✓ Saved</span>
+                </div>
+                <div class="event-input-group">
+                    <input type="text" id="eventInput" placeholder="Enter event description...">
+                    <button id="saveEventBtn">Save</button>
+                </div>
+            </div>
+
+            <!-- Attendance Sections -->
+            <div id="attendanceContainer"></div>
+        </div>
+    </div>
+
+    <!-- Apply Leave Modal -->
+    <div id="applyLeaveModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Apply Leave / WO-WO</h3>
+                <button class="close-modal" onclick="closeModal('applyLeaveModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" id="userInputGroup" style="display: none;">
+                    <label>User Short Name</label>
+                    <input type="text" id="leaveUserShortName" placeholder="e.g., MSV, SHP">
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="leaveStatus">
+                        <option value="Leave">Leave</option>
+                        <option value="WO-WO">WO-WO</option>
+                        <option value="Present">Present</option>
+                        <option value="W-Off">W-Off</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="form-group">
+                    <label>End Date</label>
+                    <input type="date" id="endDate">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('applyLeaveModal')">Cancel</button>
+                <button class="btn btn-primary" id="applyLeaveConfirmBtn">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Duty Time Modal -->
+    <div id="dutyTimeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Location & Duty Time</h3>
+                <button class="close-modal" onclick="closeModal('dutyTimeModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label id="dutyTimeUserName">User:</label>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <select id="dutyTimeLocation"></select>
+                </div>
+                <div class="form-group">
+                    <label>Duty Time</label>
+                    <input type="text" id="dutyTimeValue" placeholder="e.g., 9:00 PM">
+                </div>
+                <small style="color: var(--danger);">Note: This change applies only for today's date.</small>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('dutyTimeModal')">Cancel</button>
+                <button class="btn btn-primary" id="saveDutyTimeBtn">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Exception</h3>
+                <button class="close-modal" onclick="closeModal('deleteConfirmModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteConfirmMessage">This will delete the record and update the leave balance.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('deleteConfirmModal')">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Properties Panel -->
+    <div id="propertiesModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3>Employee Properties</h3>
+                <button class="close-modal" onclick="closeModal('propertiesModal')">×</button>
+            </div>
+            <div class="modal-body" id="propertiesBody">
+                <div id="propertiesLoading">Loading...</div>
+                <div id="propertiesContent" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('propertiesModal')">Close</button>
+                <button class="btn btn-primary" id="saveAllPropertiesBtn">Save All Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- FAB -->
+    <button class="fab" id="fabBtn">+</button>
+
+    <script>
+        // Firebase configuration from your google-services.json
+        const firebaseConfig = {
+            apiKey: "AIzaSyBp4M3XcilohW-eYKsgTPUwZxsky-8dij8",
+            authDomain: "kol-planner.firebaseapp.com",
+            projectId: "kol-planner",
+            storageBucket: "kol-planner.firebasestorage.app",
+            messagingSenderId: "161850555001",
+            appId: "1:161850555001:android:c17d69d888f1fbc13a32a8"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Global variables
+        let currentUserRole = 'user';
+        let currentUserShortName = '';
+        let currentUserEmail = null;
+        let allUsers = [];
+        let currentExceptions = [];
+        let currentDate = new Date();
+        let selectedCity = 'Kolhapur';
+        let currentEventText = '';
+        let mustRemain = 5;
+        let modifiedUsers = new Map();
+        let pendingDeleteUser = null;
+        let pendingDeleteStatus = '';
+        let pendingDutyTimeUser = null;
+        
+        // Fixed cities
+        const fixedCities = ['Kolhapur', 'Sangli', 'Satara', 'Kokan'];
+        
+        // Location options by city
+        const locationOptions = {
+            'Kolhapur': ['MIDC', 'CITY', 'Ichalkaranji', 'Gadhinglaj'],
+            'Sangli': ['Sangli', 'Islampur'],
+            'Satara': ['Satara'],
+            'Kokan': ['Ratnagiri', 'Kankawali']
+        };
+        
+        const weeklyOffOptions = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        
+        // Helper functions
+        function formatDate(date) {
+            const d = new Date(date);
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+        
+        function formatDateForInput(date) {
+            const d = new Date(date);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        function formatDateForDisplay(date) {
+            const d = new Date(date);
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
+        function getDayOfWeek(date) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            return days[date.getDay()];
+        }
+        
+        function getDocumentIdFromEmail(email) {
+            return email.toLowerCase().replace(/[@.]/g, '_');
+        }
+        
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + (isSuccess ? 'success' : 'error');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+        
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        // Load users from Firestore
+        async function loadUsers() {
+            try {
+                const usersSnapshot = await db.collection('users').get();
+                allUsers = [];
+                usersSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    allUsers.push({
+                        documentId: doc.id,
+                        shortName: data.shortName || '',
+                        fullName: data.fullName || '',
+                        email: data.email || '',
+                        weeklyOff: data.weeklyOff || 'Sunday',
+                        leaveBalance: data.leaveBalance || 0,
+                        city: data.city || '',
+                        defaultLocation: data.defaultLocation || '',
+                        dutyTime: data.dutyTime || '',
+                        role: data.role || 'user'
+                    });
+                });
+                console.log('Loaded users:', allUsers.length);
+                return allUsers;
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showToast('Error loading users: ' + error.message, false);
+                return [];
+            }
+        }
+        
+        // Load exceptions for current date
+        async function loadExceptions() {
+            const dateStr = formatDate(currentDate);
+            try {
+                const exceptionsSnapshot = await db.collection('exceptions')
+                    .where('date', '==', dateStr)
+                    .get();
+                currentExceptions = [];
+                exceptionsSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    currentExceptions.push({
+                        documentId: doc.id,
+                        date: data.date,
+                        shortName: data.shortName,
+                        status: data.status,
+                        daysCount: data.daysCount || 1,
+                        location: data.location,
+                        dutyTime: data.dutyTime
+                    });
+                });
+                console.log('Loaded exceptions:', currentExceptions.length);
+                return currentExceptions;
+            } catch (error) {
+                console.error('Error loading exceptions:', error);
+                return [];
+            }
+        }
+        
+        // Load event for current city and date
+        async function loadEvent() {
+            const dateStr = formatDate(currentDate);
+            const eventId = `${selectedCity}_${dateStr}`.toLowerCase().replace(/ /g, '_');
+            try {
+                const eventDoc = await db.collection('dailyEvents').doc(eventId).get();
+                if (eventDoc.exists) {
+                    currentEventText = eventDoc.data().eventText || '';
+                } else {
+                    currentEventText = '';
+                }
+                document.getElementById('eventInput').value = currentEventText;
+                const savedBadge = document.getElementById('savedBadge');
+                if (currentEventText) {
+                    savedBadge.style.display = 'inline';
+                } else {
+                    savedBadge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading event:', error);
+                currentEventText = '';
+            }
+        }
+        
+        // Save event
+        async function saveEvent() {
+            const newEventText = document.getElementById('eventInput').value;
+            const dateStr = formatDate(currentDate);
+            const eventId = `${selectedCity}_${dateStr}`.toLowerCase().replace(/ /g, '_');
+            
+            showLoading();
+            try {
+                await db.collection('dailyEvents').doc(eventId).set({
+                    city: selectedCity,
+                    date: dateStr,
+                    eventText: newEventText,
+                    updatedBy: currentUserEmail,
+                    updatedAt: new Date()
+                }, { merge: true });
+                
+                currentEventText = newEventText;
+                const savedBadge = document.getElementById('savedBadge');
+                if (newEventText) {
+                    savedBadge.style.display = 'inline';
+                } else {
+                    savedBadge.style.display = 'none';
+                }
+                showToast('Event saved successfully');
+            } catch (error) {
+                console.error('Error saving event:', error);
+                showToast('Failed to save event: ' + error.message, false);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // Build attendance list
+        function buildAttendanceList() {
+            const dayOfWeek = getDayOfWeek(currentDate);
+            const exceptionMap = new Map();
+            currentExceptions.forEach(exp => {
+                exceptionMap.set(exp.shortName, exp);
+            });
+            
+            const filteredUsers = allUsers.filter(u => u.city === selectedCity);
+            const attendanceData = filteredUsers.map(user => {
+                const exception = exceptionMap.get(user.shortName);
+                
+                let status = 'Present';
+                if (exception && exception.status) {
+                    status = exception.status;
+                } else if (user.weeklyOff.toLowerCase() === dayOfWeek.toLowerCase()) {
+                    status = 'W-Off';
+                }
+                
+                const location = (exception && exception.location) ? exception.location : user.defaultLocation;
+                const dutyTime = (exception && exception.dutyTime) ? exception.dutyTime : user.dutyTime;
+                
+                return { user, status, location, dutyTime, hasException: !!exception };
+            });
+            
+            return attendanceData;
+        }
+        
+        // Render attendance by location groups
+        function renderAttendance() {
+            const attendanceData = buildAttendanceList();
+            const container = document.getElementById('attendanceContainer');
+            container.innerHTML = '';
+            
+            if (attendanceData.length === 0) {
+                container.innerHTML = '<div class="attendance-section"><div class="attendance-table" style="padding: 40px; text-align: center; color: var(--text-secondary);">No staff data available for ' + selectedCity + '</div></div>';
+                return;
+            }
+            
+            let groupedData;
+            if (selectedCity === 'Kolhapur') {
+                const midcUsers = attendanceData.filter(a => a.location === 'MIDC');
+                const cityUsers = attendanceData.filter(a => a.location === 'CITY');
+                const otherUsers = attendanceData.filter(a => a.location !== 'MIDC' && a.location !== 'CITY');
+                groupedData = [
+                    { title: 'MIDC', users: midcUsers },
+                    { title: 'CITY', users: cityUsers },
+                    { title: 'Other', users: otherUsers }
+                ].filter(g => g.users.length > 0);
+            } else {
+                const locationMap = new Map();
+                attendanceData.forEach(a => {
+                    if (!locationMap.has(a.location)) locationMap.set(a.location, []);
+                    locationMap.get(a.location).push(a);
+                });
+                groupedData = Array.from(locationMap.entries())
+                    .map(([location, users]) => ({ title: location, users }))
+                    .sort((a, b) => a.title.localeCompare(b.title));
+            }
+            
+            groupedData.forEach(group => {
+                const presentCount = group.users.filter(u => u.status === 'Present' || u.status === 'WO-WO').length;
+                const section = document.createElement('div');
+                section.className = 'attendance-section';
+                section.innerHTML = `
+                    <div class="section-title">${group.title} (Present: ${presentCount})</div>
+                    <div class="attendance-table">
+                        <div class="table-header grid-5cols">
+                            <span>Name</span>
+                            <span>+/-</span>
+                            <span>Time</span>
+                            <span>Status</span>
+                        </div>
+                        <div id="attendanceRows-${group.title.replace(/\s/g, '')}"></div>
+                    </div>
+                `;
+                container.appendChild(section);
+                
+                const rowsContainer = section.querySelector(`[id^="attendanceRows-"]`);
+                group.users.forEach((attendance, index) => {
+                    const balanceDiff = attendance.user.leaveBalance - mustRemain;
+                    const balanceDisplay = balanceDiff > 0 ? `+${balanceDiff}` : balanceDiff.toString();
+                    let statusColor = 'white';
+                    switch (attendance.status) {
+                        case 'Present': statusColor = '#1cc88a'; break;
+                        case 'Leave': statusColor = '#e74a3b'; break;
+                        case 'W-Off': statusColor = '#f6c23e'; break;
+                        case 'WO-WO': statusColor = '#0077b6'; break;
+                    }
+                    
+                    const row = document.createElement('div');
+                    row.className = `table-row grid-5cols ${attendance.hasException ? 'has-exception' : ''}`;
+                    row.style.backgroundColor = index % 2 === 0 ? '#212428' : '#1b1c1e';
+                    row.innerHTML = `
+                        <span style="overflow: hidden; text-overflow: ellipsis;">${attendance.user.fullName}</span>
+                        <span style="color: ${balanceDiff > 0 ? '#1cc88a' : (balanceDiff < 0 ? '#e74a3b' : 'white')}">${balanceDisplay}</span>
+                        <span style="color: #a0a0a0;">${attendance.dutyTime}</span>
+                        <span style="color: ${statusColor};">${attendance.status}</span>
+                    `;
+                    
+                    // Double click for delete, triple click for duty time
+                    let clickCount = 0;
+                    let clickTimer = null;
+                    row.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        clickCount++;
+                        if (clickTimer) clearTimeout(clickTimer);
+                        clickTimer = setTimeout(() => {
+                            if (clickCount === 2) {
+                                if (attendance.hasException && attendance.status !== 'W-Off') {
+                                    pendingDeleteUser = attendance.user;
+                                    pendingDeleteStatus = attendance.status;
+                                    document.getElementById('deleteConfirmMessage').innerHTML = `This will delete the ${attendance.status} record and ${attendance.status === 'Leave' ? 'add back' : 'subtract'} the leave balance. Do you want to continue?`;
+                                    openModal('deleteConfirmModal');
+                                } else if (attendance.status === 'W-Off') {
+                                    showToast('W-Off cannot be deleted. It has no impact on leave balance.', false);
+                                } else {
+                                    showToast('No deletable exception found for this user', false);
+                                }
+                            } else if (clickCount === 3) {
+                                pendingDutyTimeUser = attendance.user;
+                                openDutyTimeModal(attendance.user);
+                            }
+                            clickCount = 0;
+                        }, 300);
+                    });
+                    
+                    rowsContainer.appendChild(row);
+                });
+            });
+        }
+        
+        // Open duty time modal
+        function openDutyTimeModal(user) {
+            const locationSelect = document.getElementById('dutyTimeLocation');
+            const options = locationOptions[user.city] || [user.defaultLocation];
+            locationSelect.innerHTML = options.map(opt => `<option value="${opt}" ${opt === user.defaultLocation ? 'selected' : ''}>${opt}</option>`).join('');
+            document.getElementById('dutyTimeUserName').innerHTML = `User: ${user.fullName} (${user.shortName})`;
+            document.getElementById('dutyTimeValue').value = user.dutyTime;
+            openModal('dutyTimeModal');
+        }
+        
+        // Save duty time override
+        async function saveDutyTimeOverride() {
+            if (!pendingDutyTimeUser) return;
+            
+            const newLocation = document.getElementById('dutyTimeLocation').value;
+            const dutyTime = document.getElementById('dutyTimeValue').value;
+            const dateStr = formatDate(currentDate);
+            const exceptionId = `${dateStr.replace(/-/g, '_')}_${pendingDutyTimeUser.shortName}`;
+            
+            showLoading();
+            try {
+                await db.collection('exceptions').doc(exceptionId).set({
+                    date: dateStr,
+                    shortName: pendingDutyTimeUser.shortName,
+                    location: newLocation,
+                    dutyTime: dutyTime,
+                    updatedBy: currentUserEmail,
+                    updatedAt: new Date()
+                }, { merge: true });
+                
+                closeModal('dutyTimeModal');
+                await refreshData();
+                showToast(`Location updated to ${newLocation} for ${pendingDutyTimeUser.shortName}`);
+                pendingDutyTimeUser = null;
+            } catch (error) {
+                console.error('Error updating location:', error);
+                showToast('Failed to update location: ' + error.message, false);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // Apply leave
+        async function applyLeave() {
+            let shortName = document.getElementById('leaveUserShortName').value;
+            if (currentUserRole !== 'hod' && currentUserRole !== 'admin') {
+                shortName = currentUserShortName;
+            }
+            
+            const status = document.getElementById('leaveStatus').value;
+            const startDateStr = document.getElementById('startDate').value;
+            const endDateStr = document.getElementById('endDate').value;
+            
+            if (!shortName) {
+                showToast('Please enter user short name', false);
+                return;
+            }
+            if (!startDateStr || !endDateStr) {
+                showToast('Please select start and end dates', false);
+                return;
+            }
+            
+            const targetUser = allUsers.find(u => u.shortName.toLowerCase() === shortName.toLowerCase());
+            if (!targetUser) {
+                showToast(`User not found with shortName: ${shortName}`, false);
+                return;
+            }
+            
+            const startDate = new Date(startDateStr);
+            const endDate = new Date(endDateStr);
+            const totalDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            
+            const totalBalanceChange = status === 'Leave' ? -totalDays : (status === 'WO-WO' ? +totalDays : 0);
+            
+            showLoading();
+            let allSuccess = true;
+            let successCount = 0;
+            let failCount = 0;
+            
+            const currentDateLoop = new Date(startDate);
+            while (currentDateLoop <= endDate) {
+                const dateFormatted = formatDate(currentDateLoop);
+                const exceptionId = `${dateFormatted.replace(/-/g, '_')}_${shortName}`;
+                
+                try {
+                    await db.collection('exceptions').doc(exceptionId).set({
+                        date: dateFormatted,
+                        shortName: shortName,
+                        status: status,
+                        daysCount: 1,
+                        appliedBy: currentUserEmail,
+                        appliedAt: new Date()
+                    }, { merge: true });
+                    successCount++;
+                } catch (error) {
+                    console.error('Error applying for date:', dateFormatted, error);
+                    allSuccess = false;
+                    failCount++;
+                }
+                currentDateLoop.setDate(currentDateLoop.getDate() + 1);
+            }
+            
+            if (totalBalanceChange !== 0 && successCount > 0) {
+                const userDocId = getDocumentIdFromEmail(targetUser.email);
+                const userRef = db.collection('users').doc(userDocId);
+                
+                try {
+                    await db.runTransaction(async (transaction) => {
+                        const userDoc = await transaction.get(userRef);
+                        const currentBalance = userDoc.data()?.leaveBalance || 0;
+                        transaction.update(userRef, { leaveBalance: currentBalance + totalBalanceChange });
+                    });
+                } catch (error) {
+                    console.error('Error updating balance:', error);
+                    showToast('Applied leave but failed to update balance', false);
+                    hideLoading();
+                    return;
+                }
+            }
+            
+            hideLoading();
+            closeModal('applyLeaveModal');
+            await refreshData();
+            
+            if (allSuccess) {
+                showToast(`${status} applied successfully for ${targetUser.fullName} (${totalDays} days)`);
+            } else {
+                showToast(`Partially applied: ${successCount} days succeeded, ${failCount} failed`, false);
+            }
+        }
+        
+        // Delete exception
+        async function deleteException() {
+            if (!pendingDeleteUser) return;
+            
+            const dateStr = formatDate(currentDate);
+            const exception = currentExceptions.find(e => e.shortName === pendingDeleteUser.shortName);
+            
+            if (!exception) {
+                showToast('No exception found for this user', false);
+                closeModal('deleteConfirmModal');
+                return;
+            }
+            
+            const reversalBalanceChange = exception.status === 'Leave' ? +exception.daysCount : (exception.status === 'WO-WO' ? -exception.daysCount : 0);
+            
+            showLoading();
+            try {
+                if (reversalBalanceChange !== 0) {
+                    const userDocId = getDocumentIdFromEmail(pendingDeleteUser.email);
+                    const userRef = db.collection('users').doc(userDocId);
+                    
+                    await db.runTransaction(async (transaction) => {
+                        const userDoc = await transaction.get(userRef);
+                        const currentBalance = userDoc.data()?.leaveBalance || 0;
+                        transaction.update(userRef, { leaveBalance: currentBalance + reversalBalanceChange });
+                    });
+                }
+                
+                const exceptionId = `${dateStr.replace(/-/g, '_')}_${pendingDeleteUser.shortName}`;
+                await db.collection('exceptions').doc(exceptionId).delete();
+                
+                closeModal('deleteConfirmModal');
+                await refreshData();
+                showToast('Exception deleted. Balance updated.');
+                pendingDeleteUser = null;
+            } catch (error) {
+                console.error('Error deleting exception:', error);
+                showToast('Failed to delete exception: ' + error.message, false);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // Load settings
+        async function loadSettings() {
+            try {
+                const settingsDoc = await db.collection('settings').doc('appSettings').get();
+                if (settingsDoc.exists) {
+                    mustRemain = settingsDoc.data().mustRemain || 5;
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+        
+        // Load employee properties UI
+        async function loadProperties() {
+            showLoading();
+            await loadUsers();
+            
+            const container = document.getElementById('propertiesContent');
+            const loadingDiv = document.getElementById('propertiesLoading');
+            
+            const cities = [...new Set(allUsers.map(u => u.city))].sort();
+            let html = '';
+            
+            html += `
+                <div class="properties-panel" style="margin-bottom: 20px;">
+                    <div class="properties-header">
+                        <strong>Global Settings</strong>
+                    </div>
+                    <div class="properties-content active" style="display: block;">
+                        <div class="field-row" style="margin-bottom: 16px;">
+                            <label>Must Remain Balance:</label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="number" id="mustRemainInput" value="${mustRemain}" style="width: 100px;">
+                                <button class="btn btn-primary" id="updateMustRemainBtn" style="width: auto; padding: 8px 16px;">Update</button>
+                            </div>
+                        </div>
+                        <small style="color: var(--text-secondary);">Minimum leave balance required for employees</small>
+                    </div>
+                </div>
+            `;
+            
+            for (const city of cities) {
+                const cityUsers = allUsers.filter(u => u.city === city);
+                html += `
+                    <div class="properties-panel">
+                        <div class="properties-header" onclick="togglePropertiesSection(this)">
+                            <strong>${city} Employees (${cityUsers.length})</strong>
+                            <span>▼</span>
+                        </div>
+                        <div class="properties-content">
+                            ${cityUsers.map(user => `
+                                <div class="employee-card" data-shortname="${user.shortName}">
+                                    <div class="employee-name">${user.fullName} (${user.shortName})</div>
+                                    <div class="employee-fields">
+                                        <div class="field-row">
+                                            <label>Leave Balance:</label>
+                                            <input type="number" class="balance-input" value="${user.leaveBalance}" data-shortname="${user.shortName}" data-field="leaveBalance">
+                                        </div>
+                                        <div class="field-row">
+                                            <label>Duty Time:</label>
+                                            <input type="text" class="dutytime-input" value="${user.dutyTime}" data-shortname="${user.shortName}" data-field="dutyTime">
+                                        </div>
+                                        <div class="field-row">
+                                            <label>Weekly Off:</label>
+                                            <select class="weeklyoff-select" data-shortname="${user.shortName}" data-field="weeklyOff">
+                                                ${weeklyOffOptions.map(wo => `<option value="${wo}" ${wo === user.weeklyOff ? 'selected' : ''}>${wo}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                        <div class="field-row">
+                                            <label>Location:</label>
+                                            <select class="location-select" data-shortname="${user.shortName}" data-field="defaultLocation">
+                                                ${(locationOptions[user.city] || [user.defaultLocation]).map(loc => `<option value="${loc}" ${loc === user.defaultLocation ? 'selected' : ''}>${loc}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+            loadingDiv.style.display = 'none';
+            container.style.display = 'block';
+            
+            document.querySelectorAll('.balance-input, .dutytime-input, .weeklyoff-select, .location-select').forEach(el => {
+                el.addEventListener('change', function() {
+                    const shortName = this.dataset.shortname;
+                    const field = this.dataset.field;
+                    let value = this.value;
+                    if (field === 'leaveBalance') value = parseInt(value) || 0;
+                    
+                    if (!modifiedUsers.has(shortName)) {
+                        modifiedUsers.set(shortName, {});
+                    }
+                    modifiedUsers.get(shortName)[field] = value;
+                });
+            });
+            
+            document.getElementById('updateMustRemainBtn').addEventListener('click', async () => {
+                const newValue = parseInt(document.getElementById('mustRemainInput').value);
+                if (isNaN(newValue) || newValue < 0) {
+                    showToast('Enter a valid positive number', false);
+                    return;
+                }
+                showLoading();
+                try {
+                    await db.collection('settings').doc('appSettings').set({ mustRemain: newValue }, { merge: true });
+                    mustRemain = newValue;
+                    showToast('Must Remain value updated successfully');
+                    await refreshData();
+                } catch (error) {
+                    showToast('Failed to update: ' + error.message, false);
+                } finally {
+                    hideLoading();
+                }
+            });
+            
+            hideLoading();
+        }
+        
+        // Save all property changes
+        async function saveAllProperties() {
+            if (modifiedUsers.size === 0) {
+                showToast('No changes to save', false);
+                return;
+            }
+            
+            showLoading();
+            let successCount = 0;
+            let failCount = 0;
+            
+            for (const [shortName, updates] of modifiedUsers) {
+                const user = allUsers.find(u => u.shortName === shortName);
+                if (!user) continue;
+                
+                const userDocId = getDocumentIdFromEmail(user.email);
+                const userRef = db.collection('users').doc(userDocId);
+                
+                try {
+                    await userRef.update(updates);
+                    successCount++;
+                } catch (error) {
+                    console.error(`Error updating ${shortName}:`, error);
+                    failCount++;
+                }
+            }
+            
+            if (successCount > 0) {
+                modifiedUsers.clear();
+                await loadUsers();
+                await refreshData();
+                showToast(`Saved ${successCount} employee(s) successfully`);
+                closeModal('propertiesModal');
+            } else {
+                showToast('Failed to save changes', false);
+            }
+            hideLoading();
+        }
+        
+        window.togglePropertiesSection = function(header) {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('span');
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                arrow.innerHTML = '▶';
+            } else {
+                content.classList.add('active');
+                arrow.innerHTML = '▼';
+            }
+        };
+        
+        // Render city filters
+        function renderCityFilters() {
+            const container = document.getElementById('cityFilters');
+            container.innerHTML = fixedCities.map(city => `
+                <button class="city-btn ${city === selectedCity ? 'active' : ''}" data-city="${city}">${city}</button>
+            `).join('');
+            
+            document.querySelectorAll('.city-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selectedCity = btn.dataset.city;
+                    renderCityFilters();
+                    refreshData();
+                });
+            });
+        }
+        
+        // Update date display
+        function updateDateDisplay() {
+            document.getElementById('currentDate').textContent = formatDateForDisplay(currentDate);
+            document.getElementById('currentDay').textContent = getDayOfWeek(currentDate);
+            document.getElementById('eventCityLabel').innerHTML = `Event for ${selectedCity}`;
+        }
+        
+        // Refresh all data
+        async function refreshData() {
+            showLoading();
+            try {
+                await loadExceptions();
+                renderAttendance();
+                await loadEvent();
+                updateDateDisplay();
+            } catch (error) {
+                console.error('Error refreshing data:', error);
+                showToast('Error refreshing data: ' + error.message, false);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // Date navigation
+        function previousDate() {
+            currentDate.setDate(currentDate.getDate() - 1);
+            refreshData();
+        }
+        
+        function nextDate() {
+            currentDate.setDate(currentDate.getDate() + 1);
+            refreshData();
+        }
+        
+        function showDatePicker() {
+            const input = document.createElement('input');
+            input.type = 'date';
+            input.value = formatDateForInput(currentDate);
+            input.style.position = 'fixed';
+            input.style.opacity = '0';
+            input.style.pointerEvents = 'none';
+            document.body.appendChild(input);
+            input.showPicker();
+            input.addEventListener('change', () => {
+                if (input.value) {
+                    currentDate = new Date(input.value);
+                    refreshData();
+                }
+                document.body.removeChild(input);
+            });
+        }
+        
+        // Login handler
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const stayLoggedIn = document.getElementById('stayLoggedIn').checked;
+            
+            if (!email || !password) {
+                document.getElementById('loginError').textContent = 'Please enter email and password';
+                return;
+            }
+            
+            showLoading();
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                currentUserEmail = email;
+                
+                if (stayLoggedIn) {
+                    localStorage.setItem('stayLoggedIn', 'true');
+                    localStorage.setItem('userEmail', email);
+                } else {
+                    localStorage.removeItem('stayLoggedIn');
+                    localStorage.removeItem('userEmail');
+                }
+                
+                const userDoc = await db.collection('users').doc(getDocumentIdFromEmail(email)).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    currentUserRole = userData.role || 'user';
+                    currentUserShortName = userData.shortName || '';
+                }
+                
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'block';
+                
+                if (currentUserRole === 'hod' || currentUserRole === 'admin') {
+                    document.getElementById('propertiesBtn').style.display = 'inline-block';
+                }
+                
+                await loadUsers();
+                await loadSettings();
+                await refreshData();
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('loginError').textContent = error.message || 'Login failed';
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // Logout handler
+        async function handleLogout() {
+            await auth.signOut();
+            localStorage.removeItem('stayLoggedIn');
+            localStorage.removeItem('userEmail');
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            document.getElementById('loginBtn').addEventListener('click', handleLogin);
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            document.getElementById('prevDateBtn').addEventListener('click', previousDate);
+            document.getElementById('nextDateBtn').addEventListener('click', nextDate);
+            document.getElementById('datePickerBtn').addEventListener('click', showDatePicker);
+            document.getElementById('saveEventBtn').addEventListener('click', saveEvent);
+            document.getElementById('applyLeaveConfirmBtn').addEventListener('click', applyLeave);
+            document.getElementById('saveDutyTimeBtn').addEventListener('click', saveDutyTimeOverride);
+            document.getElementById('confirmDeleteBtn').addEventListener('click', deleteException);
+            document.getElementById('propertiesBtn').addEventListener('click', () => {
+                loadProperties();
+                openModal('propertiesModal');
+            });
+            document.getElementById('saveAllPropertiesBtn').addEventListener('click', saveAllProperties);
+            document.getElementById('fabBtn').addEventListener('click', () => {
+                const userInputGroup = document.getElementById('userInputGroup');
+                if (currentUserRole === 'hod' || currentUserRole === 'admin') {
+                    userInputGroup.style.display = 'block';
+                } else {
+                    userInputGroup.style.display = 'none';
+                }
+                document.getElementById('startDate').value = formatDateForInput(currentDate);
+                document.getElementById('endDate').value = formatDateForInput(currentDate);
+                openModal('applyLeaveModal');
+            });
+            
+            document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
+            });
+        }
+        
+        // Check for existing session
+        async function checkExistingSession() {
+            const stayLoggedIn = localStorage.getItem('stayLoggedIn') === 'true';
+            const savedEmail = localStorage.getItem('userEmail');
+            
+            if (stayLoggedIn && savedEmail) {
+                const user = auth.currentUser;
+                if (user && user.email === savedEmail) {
+                    currentUserEmail = savedEmail;
+                    const userDoc = await db.collection('users').doc(getDocumentIdFromEmail(savedEmail)).get();
+                    if (userDoc.exists) {
+                        currentUserRole = userDoc.data().role || 'user';
+                        currentUserShortName = userDoc.data().shortName || '';
+                    }
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('appContainer').style.display = 'block';
+                    if (currentUserRole === 'hod' || currentUserRole === 'admin') {
+                        document.getElementById('propertiesBtn').style.display = 'inline-block';
+                    }
+                    await loadUsers();
+                    await loadSettings();
+                    await refreshData();
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        // Initialize
+        async function init() {
+            setupEventListeners();
+            renderCityFilters();
+            
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    const restored = await checkExistingSession();
+                    if (!restored) {
+                        document.getElementById('loginContainer').style.display = 'none';
+                        document.getElementById('appContainer').style.display = 'block';
+                        currentUserEmail = user.email;
+                        const userDoc = await db.collection('users').doc(getDocumentIdFromEmail(user.email)).get();
+                        if (userDoc.exists) {
+                            currentUserRole = userDoc.data().role || 'user';
+                            currentUserShortName = userDoc.data().shortName || '';
+                        }
+                        if (currentUserRole === 'hod' || currentUserRole === 'admin') {
+                            document.getElementById('propertiesBtn').style.display = 'inline-block';
+                        }
+                        await loadUsers();
+                        await loadSettings();
+                        await refreshData();
+                    }
+                }
+            });
+        }
+        
+        init();
+    </script>
+</body>
+</html>
