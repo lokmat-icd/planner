@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kol-ICD Planner - Web Dashboard</title>
+    <title>ICD-Planner - Web Dashboard</title>
     
-    <!-- Firebase SDKs - Using compat versions for easier syntax -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -181,6 +181,10 @@
             color: white;
         }
 
+        .app-title span {
+            color: var(--primary);
+        }
+
         .top-bar-actions {
             display: flex;
             gap: 16px;
@@ -219,27 +223,37 @@
         /* Main Content */
         .main-content {
             padding: 20px;
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
+        }
+
+        /* Top Row: City Filters + Date Navigation */
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         /* City Filter Row */
         .city-filters {
             display: flex;
             gap: 8px;
-            margin-bottom: 20px;
             flex-wrap: wrap;
         }
 
         .city-btn {
-            padding: 8px 20px;
+            padding: 8px 24px;
             background: var(--bg-card);
             border: none;
             border-radius: 24px;
             color: white;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .city-btn.active {
@@ -254,21 +268,21 @@
         .date-nav {
             background: var(--bg-secondary);
             border-radius: 12px;
-            padding: 16px;
+            padding: 8px 16px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            gap: 12px;
         }
 
         .date-nav-btn {
             background: none;
             border: none;
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 8px;
+            transition: background 0.3s;
         }
 
         .date-nav-btn:hover {
@@ -278,16 +292,23 @@
         .date-display {
             text-align: center;
             cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .date-display:hover {
+            background: var(--bg-card);
         }
 
         .date-display .date {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: white;
         }
 
         .date-display .day {
-            font-size: 14px;
+            font-size: 12px;
             color: var(--text-secondary);
         }
 
@@ -295,8 +316,8 @@
         .event-card {
             background: var(--bg-card);
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
         }
 
         .event-header {
@@ -309,6 +330,7 @@
         .event-header h4 {
             color: var(--primary);
             font-size: 14px;
+            font-weight: 600;
         }
 
         .saved-badge {
@@ -323,12 +345,12 @@
 
         .event-input-group input {
             flex: 1;
-            padding: 12px;
+            padding: 12px 16px;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 8px;
             color: white;
-            font-size: 13px;
+            font-size: 14px;
         }
 
         .event-input-group input:focus {
@@ -337,12 +359,18 @@
         }
 
         .event-input-group button {
-            padding: 0 20px;
+            padding: 0 24px;
             background: var(--primary);
             border: none;
             border-radius: 8px;
             color: white;
             cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .event-input-group button:hover {
+            background: var(--primary-dark);
         }
 
         .event-input-group button:disabled {
@@ -352,15 +380,16 @@
 
         /* Attendance Sections */
         .attendance-section {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .section-title {
             background: #0F1D4B;
-            padding: 12px 16px;
+            padding: 12px 20px;
             border-radius: 12px 12px 0 0;
             font-weight: bold;
             color: white;
+            font-size: 15px;
         }
 
         .attendance-table {
@@ -372,18 +401,20 @@
         .table-header {
             display: grid;
             background: var(--bg-card);
-            padding: 12px 16px;
+            padding: 12px 20px;
             font-weight: bold;
             color: white;
             border-bottom: 1px solid var(--border);
+            font-size: 13px;
         }
 
         .table-row {
             display: grid;
-            padding: 10px 16px;
+            padding: 10px 20px;
             border-bottom: 1px solid var(--border);
             cursor: pointer;
             transition: background 0.2s;
+            font-size: 13px;
         }
 
         .table-row:hover {
@@ -394,9 +425,9 @@
             background: #3d1f2d;
         }
 
-        /* Grid layouts for different cities */
+        /* Grid layouts */
         .grid-5cols {
-            grid-template-columns: 5fr 1fr 2fr 2fr;
+            grid-template-columns: 4fr 0.8fr 1.5fr 1.5fr;
         }
 
         /* Modals */
@@ -617,17 +648,11 @@
             color: white;
         }
 
-        .save-all-btn {
-            margin-top: 16px;
-            width: auto;
-            padding: 10px 20px;
-        }
-
         /* FAB */
         .fab {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 24px;
+            right: 24px;
             width: 56px;
             height: 56px;
             border-radius: 50%;
@@ -636,16 +661,17 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             z-index: 90;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s;
+            transition: transform 0.2s, background 0.2s;
         }
 
         .fab:hover {
             transform: scale(1.05);
+            background-color: var(--primary-dark);
         }
 
         /* Responsive */
@@ -654,8 +680,26 @@
                 padding: 12px;
             }
             
+            .top-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .city-filters {
+                justify-content: center;
+            }
+            
+            .date-nav {
+                justify-content: center;
+            }
+            
             .table-header, .table-row {
-                font-size: 12px;
+                font-size: 11px;
+                padding: 8px 12px;
+            }
+            
+            .grid-5cols {
+                grid-template-columns: 3fr 0.8fr 1.5fr 1.5fr;
             }
             
             .field-row {
@@ -669,7 +713,7 @@
     <!-- Login Container -->
     <div id="loginContainer" class="login-container">
         <div class="login-card">
-            <div class="login-title">Kol-ICD Planner</div>
+            <div class="login-title">ICD-Planner</div>
             <div class="input-group">
                 <label>Email Address</label>
                 <input type="email" id="loginEmail" placeholder="user@example.com">
@@ -690,7 +734,7 @@
     <!-- Main App Container -->
     <div id="appContainer" class="app-container">
         <div class="top-bar">
-            <div class="app-title">Kol-ICD Planner</div>
+            <div class="app-title" id="appTitle">ICD-Planner</div>
             <div class="top-bar-actions">
                 <button class="icon-btn" id="propertiesBtn" style="display: none;">⚙️</button>
                 <button class="logout-btn" id="logoutBtn">Logout</button>
@@ -698,21 +742,24 @@
         </div>
 
         <div class="main-content">
-            <!-- City Filters -->
-            <div class="city-filters" id="cityFilters"></div>
+            <!-- Top Row: City Filters + Date Navigation -->
+            <div class="top-row">
+                <!-- City Filters -->
+                <div class="city-filters" id="cityFilters"></div>
 
-            <!-- Date Navigation -->
-            <div class="date-nav">
-                <button class="date-nav-btn" id="prevDateBtn">◀</button>
-                <div class="date-display" id="datePickerBtn">
-                    <div class="date" id="currentDate">--/--/----</div>
-                    <div class="day" id="currentDay">-------</div>
+                <!-- Date Navigation -->
+                <div class="date-nav">
+                    <button class="date-nav-btn" id="prevDateBtn">◀</button>
+                    <div class="date-display" id="datePickerBtn">
+                        <div class="date" id="currentDate">--/--/----</div>
+                        <div class="day" id="currentDay">-------</div>
+                    </div>
+                    <button class="date-nav-btn" id="nextDateBtn">▶</button>
                 </div>
-                <button class="date-nav-btn" id="nextDateBtn">▶</button>
             </div>
 
             <!-- Event Card -->
-            <div class="event-card" id="eventCard">
+            <div class="event-card">
                 <div class="event-header">
                     <h4 id="eventCityLabel">Event for Kolhapur</h4>
                     <span class="saved-badge" id="savedBadge" style="display: none;">✓ Saved</span>
@@ -840,7 +887,7 @@
     <button class="fab" id="fabBtn">+</button>
 
     <script>
-        // Firebase configuration from your google-services.json
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBp4M3XcilohW-eYKsgTPUwZxsky-8dij8",
             authDomain: "kol-planner.firebaseapp.com",
@@ -858,6 +905,7 @@
         // Global variables
         let currentUserRole = 'user';
         let currentUserShortName = '';
+        let currentUserFullName = '';
         let currentUserEmail = null;
         let allUsers = [];
         let currentExceptions = [];
@@ -941,6 +989,16 @@
         
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
+        }
+        
+        // Update top bar with user name
+        function updateTopBar() {
+            const titleElement = document.getElementById('appTitle');
+            if (currentUserFullName) {
+                titleElement.innerHTML = `ICD-Planner - ${currentUserFullName}`;
+            } else {
+                titleElement.innerHTML = `ICD-Planner - ${currentUserEmail || 'User'}`;
+            }
         }
         
         // Load users from Firestore
@@ -1632,7 +1690,12 @@
                     const userData = userDoc.data();
                     currentUserRole = userData.role || 'user';
                     currentUserShortName = userData.shortName || '';
+                    currentUserFullName = userData.fullName || email;
+                } else {
+                    currentUserFullName = email;
                 }
+                
+                updateTopBar();
                 
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('appContainer').style.display = 'block';
@@ -1708,7 +1771,11 @@
                     if (userDoc.exists) {
                         currentUserRole = userDoc.data().role || 'user';
                         currentUserShortName = userDoc.data().shortName || '';
+                        currentUserFullName = userDoc.data().fullName || savedEmail;
+                    } else {
+                        currentUserFullName = savedEmail;
                     }
+                    updateTopBar();
                     document.getElementById('loginContainer').style.display = 'none';
                     document.getElementById('appContainer').style.display = 'block';
                     if (currentUserRole === 'hod' || currentUserRole === 'admin') {
@@ -1739,7 +1806,11 @@
                         if (userDoc.exists) {
                             currentUserRole = userDoc.data().role || 'user';
                             currentUserShortName = userDoc.data().shortName || '';
+                            currentUserFullName = userDoc.data().fullName || user.email;
+                        } else {
+                            currentUserFullName = user.email;
                         }
+                        updateTopBar();
                         if (currentUserRole === 'hod' || currentUserRole === 'admin') {
                             document.getElementById('propertiesBtn').style.display = 'inline-block';
                         }
