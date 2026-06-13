@@ -34,7 +34,6 @@
             --success: #1cc88a;
             --danger: #e74a3b;
             --warning: #f6c23e;
-            --info: #0077b6;
             --text-primary: #e0e0e0;
             --text-secondary: #a0a0a0;
             --border: #3a3a42;
@@ -161,12 +160,13 @@
         .app-container {
             min-height: 100vh;
             display: none;
+            flex-direction: column;
         }
 
-        /* Top Bar */
+        /* Top Bar - Row 1 */
         .top-bar {
             background: #0F1D4B;
-            padding: 12px 24px;
+            padding: 8px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -176,83 +176,28 @@
         }
 
         .app-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: white;
+            white-space: nowrap;
         }
 
-        .app-title span {
-            color: var(--primary);
-        }
-
-        .top-bar-actions {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 20px;
-            padding: 8px;
-            border-radius: 8px;
-            transition: background 0.3s;
-        }
-
-        .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .logout-btn {
-            background: rgba(231, 74, 59, 0.2);
-            color: var(--danger);
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .logout-btn:hover {
-            background: rgba(231, 74, 59, 0.3);
-        }
-
-        /* Main Content */
-        .main-content {
-            padding: 20px;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        /* Top Row: City Filters + Date Navigation */
-        .top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        /* City Filter Row */
         .city-filters {
             display: flex;
-            gap: 8px;
+            gap: 4px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .city-btn {
-            padding: 8px 24px;
+            padding: 6px 20px;
             background: var(--bg-card);
             border: none;
-            border-radius: 24px;
+            border-radius: 20px;
             color: white;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
         }
 
@@ -264,153 +209,201 @@
             background: var(--bg-hover);
         }
 
-        /* Date Navigation */
-        .date-nav {
+        .top-bar-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            background: rgba(231, 74, 59, 0.2);
+            color: var(--danger);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(231, 74, 59, 0.3);
+        }
+
+        /* Row 2: Date Nav + Event Input */
+        .action-row {
             background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 8px 16px;
+            padding: 8px 20px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Date Navigation - Compact */
+        .date-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 4px 8px;
+            flex-shrink: 0;
         }
 
         .date-nav-btn {
             background: none;
             border: none;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 4px 8px;
+            border-radius: 6px;
             transition: background 0.3s;
         }
 
         .date-nav-btn:hover {
-            background: var(--bg-card);
+            background: var(--bg-hover);
         }
 
         .date-display {
             text-align: center;
             cursor: pointer;
-            padding: 4px 12px;
-            border-radius: 8px;
+            padding: 2px 8px;
+            border-radius: 6px;
             transition: background 0.3s;
         }
 
         .date-display:hover {
-            background: var(--bg-card);
+            background: var(--bg-hover);
         }
 
         .date-display .date {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             color: white;
         }
 
         .date-display .day {
-            font-size: 12px;
+            font-size: 10px;
             color: var(--text-secondary);
         }
 
-        /* Event Card */
-        .event-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 24px;
-        }
-
-        .event-header {
+        /* Event Input - Compact and fills remaining space */
+        .event-container {
+            flex: 1;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            gap: 8px;
         }
 
-        .event-header h4 {
+        .event-label {
+            font-size: 13px;
             color: var(--primary);
-            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .event-input {
+            flex: 1;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: white;
+            font-size: 13px;
+        }
+
+        .event-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .event-save-btn {
+            padding: 8px 20px;
+            background: var(--primary);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
             font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: background 0.3s;
+        }
+
+        .event-save-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .event-save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .saved-badge {
             color: var(--success);
             font-size: 11px;
+            margin-left: 8px;
+            white-space: nowrap;
         }
 
-        .event-input-group {
-            display: flex;
-            gap: 12px;
-        }
-
-        .event-input-group input {
-            flex: 1;
-            padding: 12px 16px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: white;
-            font-size: 14px;
-        }
-
-        .event-input-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .event-input-group button {
-            padding: 0 24px;
-            background: var(--primary);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-
-        .event-input-group button:hover {
-            background: var(--primary-dark);
-        }
-
-        .event-input-group button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        /* Main Content */
+        .main-content {
+            padding: 16px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         /* Attendance Sections */
         .attendance-section {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .section-title {
             background: #0F1D4B;
-            padding: 12px 20px;
-            border-radius: 12px 12px 0 0;
+            padding: 10px 16px;
+            border-radius: 8px 8px 0 0;
             font-weight: bold;
             color: white;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .attendance-table {
             background: var(--bg-secondary);
-            border-radius: 0 0 12px 12px;
+            border-radius: 0 0 8px 8px;
             overflow-x: auto;
         }
 
         .table-header {
             display: grid;
             background: var(--bg-card);
-            padding: 12px 20px;
+            padding: 10px 16px;
             font-weight: bold;
             color: white;
             border-bottom: 1px solid var(--border);
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .table-row {
             display: grid;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-bottom: 1px solid var(--border);
             cursor: pointer;
             transition: background 0.2s;
@@ -450,7 +443,7 @@
 
         .modal-content {
             background: var(--bg-secondary);
-            border-radius: 16px;
+            border-radius: 12px;
             width: 90%;
             max-width: 500px;
             max-height: 90vh;
@@ -458,7 +451,7 @@
         }
 
         .modal-header {
-            padding: 20px;
+            padding: 16px 20px;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
@@ -467,6 +460,7 @@
 
         .modal-header h3 {
             color: white;
+            font-size: 18px;
         }
 
         .close-modal {
@@ -482,7 +476,7 @@
         }
 
         .modal-footer {
-            padding: 20px;
+            padding: 16px 20px;
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: flex-end;
@@ -490,22 +484,22 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 12px;
+            padding: 10px 12px;
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 6px;
             color: white;
             font-size: 14px;
         }
@@ -523,11 +517,12 @@
             transform: translateX(-50%);
             background: var(--bg-card);
             color: white;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 8px;
             z-index: 1100;
             display: none;
             animation: slideUp 0.3s ease;
+            font-size: 13px;
         }
 
         .toast.success {
@@ -572,9 +567,9 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--bg-card);
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--bg-card);
             border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -587,14 +582,14 @@
         /* Employee Properties Panel */
         .properties-panel {
             background: var(--bg-secondary);
-            border-radius: 12px;
-            margin-bottom: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
             overflow: hidden;
         }
 
         .properties-header {
             background: #0F1D4B;
-            padding: 16px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -603,7 +598,7 @@
 
         .properties-content {
             display: none;
-            padding: 20px;
+            padding: 16px;
         }
 
         .properties-content.active {
@@ -612,40 +607,42 @@
 
         .employee-card {
             background: var(--bg-card);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
         }
 
         .employee-name {
             color: var(--primary);
             font-weight: bold;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            font-size: 14px;
         }
 
         .employee-fields {
             display: grid;
-            gap: 12px;
+            gap: 10px;
         }
 
         .field-row {
             display: grid;
-            grid-template-columns: 120px 1fr;
+            grid-template-columns: 110px 1fr;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .field-row label {
             color: var(--text-secondary);
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .field-row input, .field-row select {
-            padding: 8px 12px;
+            padding: 6px 10px;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 4px;
             color: white;
+            font-size: 13px;
         }
 
         /* FAB */
@@ -653,8 +650,8 @@
             position: fixed;
             bottom: 24px;
             right: 24px;
-            width: 56px;
-            height: 56px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             background-color: var(--primary);
             color: white;
@@ -675,36 +672,51 @@
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 12px;
-            }
-            
-            .top-row {
-                flex-direction: column;
-                align-items: stretch;
+        @media (max-width: 900px) {
+            .top-bar {
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 8px 12px;
             }
             
             .city-filters {
+                order: 3;
+                width: 100%;
                 justify-content: center;
             }
             
+            .action-row {
+                flex-wrap: wrap;
+                padding: 8px 12px;
+            }
+            
             .date-nav {
-                justify-content: center;
+                order: 1;
+            }
+            
+            .event-container {
+                order: 2;
+                width: 100%;
             }
             
             .table-header, .table-row {
                 font-size: 11px;
-                padding: 8px 12px;
+                padding: 6px 12px;
             }
             
             .grid-5cols {
                 grid-template-columns: 3fr 0.8fr 1.5fr 1.5fr;
             }
-            
+        }
+        
+        @media (max-width: 600px) {
             .field-row {
                 grid-template-columns: 1fr;
                 gap: 4px;
+            }
+            
+            .event-label {
+                display: none;
             }
         }
     </style>
@@ -733,44 +745,36 @@
 
     <!-- Main App Container -->
     <div id="appContainer" class="app-container">
+        <!-- Row 1: Top Bar -->
         <div class="top-bar">
             <div class="app-title" id="appTitle">ICD-Planner</div>
+            <div class="city-filters" id="cityFilters"></div>
             <div class="top-bar-actions">
                 <button class="icon-btn" id="propertiesBtn" style="display: none;">⚙️</button>
                 <button class="logout-btn" id="logoutBtn">Logout</button>
             </div>
         </div>
 
+        <!-- Row 2: Date Navigation + Event Input -->
+        <div class="action-row">
+            <div class="date-nav">
+                <button class="date-nav-btn" id="prevDateBtn">◀</button>
+                <div class="date-display" id="datePickerBtn">
+                    <div class="date" id="currentDate">--/--/----</div>
+                    <div class="day" id="currentDay">-------</div>
+                </div>
+                <button class="date-nav-btn" id="nextDateBtn">▶</button>
+            </div>
+            <div class="event-container">
+                <span class="event-label" id="eventCityLabel">Event:</span>
+                <input type="text" class="event-input" id="eventInput" placeholder="Enter event description...">
+                <button class="event-save-btn" id="saveEventBtn">Save</button>
+                <span class="saved-badge" id="savedBadge" style="display: none;">✓</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
         <div class="main-content">
-            <!-- Top Row: City Filters + Date Navigation -->
-            <div class="top-row">
-                <!-- City Filters -->
-                <div class="city-filters" id="cityFilters"></div>
-
-                <!-- Date Navigation -->
-                <div class="date-nav">
-                    <button class="date-nav-btn" id="prevDateBtn">◀</button>
-                    <div class="date-display" id="datePickerBtn">
-                        <div class="date" id="currentDate">--/--/----</div>
-                        <div class="day" id="currentDay">-------</div>
-                    </div>
-                    <button class="date-nav-btn" id="nextDateBtn">▶</button>
-                </div>
-            </div>
-
-            <!-- Event Card -->
-            <div class="event-card">
-                <div class="event-header">
-                    <h4 id="eventCityLabel">Event for Kolhapur</h4>
-                    <span class="saved-badge" id="savedBadge" style="display: none;">✓ Saved</span>
-                </div>
-                <div class="event-input-group">
-                    <input type="text" id="eventInput" placeholder="Enter event description...">
-                    <button id="saveEventBtn">Save</button>
-                </div>
-            </div>
-
-            <!-- Attendance Sections -->
             <div id="attendanceContainer"></div>
         </div>
     </div>
@@ -1444,16 +1448,16 @@
             let html = '';
             
             html += `
-                <div class="properties-panel" style="margin-bottom: 20px;">
+                <div class="properties-panel" style="margin-bottom: 16px;">
                     <div class="properties-header">
                         <strong>Global Settings</strong>
                     </div>
                     <div class="properties-content active" style="display: block;">
-                        <div class="field-row" style="margin-bottom: 16px;">
+                        <div class="field-row" style="margin-bottom: 12px;">
                             <label>Must Remain Balance:</label>
-                            <div style="display: flex; gap: 10px; align-items: center;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
                                 <input type="number" id="mustRemainInput" value="${mustRemain}" style="width: 100px;">
-                                <button class="btn btn-primary" id="updateMustRemainBtn" style="width: auto; padding: 8px 16px;">Update</button>
+                                <button class="btn btn-primary" id="updateMustRemainBtn" style="width: auto; padding: 6px 12px;">Update</button>
                             </div>
                         </div>
                         <small style="color: var(--text-secondary);">Minimum leave balance required for employees</small>
@@ -1613,7 +1617,7 @@
         function updateDateDisplay() {
             document.getElementById('currentDate').textContent = formatDateForDisplay(currentDate);
             document.getElementById('currentDay').textContent = getDayOfWeek(currentDate);
-            document.getElementById('eventCityLabel').innerHTML = `Event for ${selectedCity}`;
+            document.getElementById('eventCityLabel').innerHTML = `Event:`;
         }
         
         // Refresh all data
@@ -1698,7 +1702,7 @@
                 updateTopBar();
                 
                 document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('appContainer').style.display = 'block';
+                document.getElementById('appContainer').style.display = 'flex';
                 
                 if (currentUserRole === 'hod' || currentUserRole === 'admin') {
                     document.getElementById('propertiesBtn').style.display = 'inline-block';
@@ -1777,7 +1781,7 @@
                     }
                     updateTopBar();
                     document.getElementById('loginContainer').style.display = 'none';
-                    document.getElementById('appContainer').style.display = 'block';
+                    document.getElementById('appContainer').style.display = 'flex';
                     if (currentUserRole === 'hod' || currentUserRole === 'admin') {
                         document.getElementById('propertiesBtn').style.display = 'inline-block';
                     }
@@ -1800,7 +1804,7 @@
                     const restored = await checkExistingSession();
                     if (!restored) {
                         document.getElementById('loginContainer').style.display = 'none';
-                        document.getElementById('appContainer').style.display = 'block';
+                        document.getElementById('appContainer').style.display = 'flex';
                         currentUserEmail = user.email;
                         const userDoc = await db.collection('users').doc(getDocumentIdFromEmail(user.email)).get();
                         if (userDoc.exists) {
