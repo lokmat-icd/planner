@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICD Unified Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* ===== BASIC STYLES ===== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; }
+        .container-fluid { max-width: 1600px; margin: 0 auto; padding: 20px; }
+
+        /* ===== LOGIN ===== */
+        .login-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #1a3a6b 0%, #2a5298 100%); }
+        .login-wrapper { background: white; padding: 40px 50px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 420px; width: 100%; }
+        .login-wrapper .logo { text-align: center; margin-bottom: 25px; }
+        .login-wrapper .logo img { width: 100%; height: auto; max-height: 80px; border-radius: 8px; }
+        .login-wrapper h3 { text-align: center; color: #1a3a6b; margin-bottom: 5px; font-weight: 600; }
+        .login-wrapper .sub { text-align: center; color: #888; font-size: 13px; margin-bottom: 25px; }
+        .login-wrapper .form-group { margin-bottom: 18px; }
+        .login-wrapper .form-group label { font-weight: 600; font-size: 13px; color: #555; display: block; margin-bottom: 5px; }
+        .login-wrapper .form-group input { border-radius: 8px; border: 1px solid #ddd; padding: 10px 14px; font-size: 14px; width: 100%; }
+        .login-wrapper .form-group input:focus { outline: none; border-color: #2a5298; box-shadow: 0 0 0 2px rgba(42,82,152,0.15); }
+        .login-wrapper .login-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; background: linear-gradient(135deg, #1a3a6b 0%, #2a5298 100%); color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .login-wrapper .login-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(42,82,152,0.3); }
+        .login-wrapper .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .login-wrapper .login-error { color: #dc3545; font-size: 13px; text-align: center; margin-top: 12px; display: none; }
+        .login-wrapper .login-error.show { display: block; }
+
+        /* ===== HEADER ===== */
+        .header { background: linear-gradient(135deg, #1a3a6b 0%, #2a5298 100%); color: white; padding: 12px 22px; border-radius: 12px; margin-bottom: 16px; }
+        .header-row1 { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 15px; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-logo { height: 42px; width: auto; object-fit: contain; }
+        .header-user { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); padding: 4px 12px 4px 16px; border-radius: 30px; }
+        .header-user .user-name { font-size: 13px; font-weight: 500; }
+        .header-user .user-role { font-size: 10px; opacity: 0.7; }
+        .header-user .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 3px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; }
+        .header-user .logout-btn:hover { background: rgba(255,255,255,0.25); }
+        .header-tabs { display: flex; gap: 4px; padding: 8px 0 0; border-top: 1px solid rgba(255,255,255,0.12); margin-top: 6px; flex-wrap: wrap; }
+        .header-tabs .tab-btn { padding: 6px 16px; border: none; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; }
+        .header-tabs .tab-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+        .header-tabs .tab-btn.active { background: rgba(255,255,255,0.2); color: white; }
+
+        /* ===== DASHBOARD ===== */
+        #dashboardContent { display: none; }
+        #loginContainer { display: flex; }
+        .hidden { display: none !important; }
+
+        /* ===== TOAST ===== */
+        .custom-toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; font-size: 14px; font-weight: 500; z-index: 10000; box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-width: 400px; animation: slideIn 0.3s ease; }
+        .custom-toast.success { background: #28a745; }
+        .custom-toast.error { background: #dc3545; }
+        .custom-toast.info { background: #17a2b8; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* ===== LOADING ===== */
+        .loading-spinner { text-align: center; padding: 50px 20px; color: #666; }
+        .loading-spinner i { font-size: 28px; margin-bottom: 10px; display: block; color: #2a5298; }
+        .welcome-message { text-align: center; padding: 60px 20px; color: #1a3a6b; }
+        .welcome-message h2 { font-size: 28px; margin-bottom: 10px; }
+        .welcome-message p { font-size: 16px; color: #666; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== LOGIN ===== -->
+    <div id="loginContainer">
+        <div class="login-page">
+            <div class="login-wrapper">
+                <div class="logo">
+                    <img src="https://lh3.googleusercontent.com/d/1uLdST5g0rbVFpAV_i7qJXAI1nZJo20lQ" alt="LOKMAT" onerror="this.style.display='none'">
+                    <h3>ICD Unified Dashboard</h3>
+                    <p class="sub">Task · Execution · Delivery — Unified Platform</p>
+                </div>
+                <div id="loginForm">
+                    <div class="form-group">
+                        <label><i class="fa fa-envelope"></i> Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa fa-lock"></i> Password (Last 4 digits of Mobile)</label>
+                        <input type="password" id="loginPassword" placeholder="Enter last 4 digits" maxlength="4" autocomplete="current-password">
+                    </div>
+                    <button class="login-btn" id="loginBtn" onclick="handleLogin()">
+                        <i class="fa fa-sign-in"></i> Sign In
+                    </button>
+                    <div class="login-error" id="loginError">Invalid email or password. Please try again.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div id="dashboardContent">
+        <div class="container-fluid">
+            <!-- HEADER -->
+            <div class="header">
+                <div class="header-row1">
+                    <div class="header-left">
+                        <img src="https://lh3.googleusercontent.com/d/1uLdST5g0rbVFpAV_i7qJXAI1nZJo20lQ" alt="LOKMAT" class="header-logo" onerror="this.style.display='none'">
+                        <span style="font-size:16px;font-weight:600;">ICD Unified</span>
+                    </div>
+                    <div class="header-user">
+                        <div>
+                            <div class="user-name" id="headerUserName">Loading...</div>
+                            <div class="user-role" id="headerUserRole">Role</div>
+                        </div>
+                        <button class="logout-btn" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+                    </div>
+                </div>
+                <div class="header-tabs" id="headerTabs">
+                    <button class="tab-btn active" onclick="loadModule('analysis')">
+                        <i class="fa fa-dashboard"></i> Analysis
+                    </button>
+                    <button class="tab-btn" onclick="loadModule('restructure')">
+                        <i class="fa fa-cubes"></i> Restructure
+                    </button>
+                </div>
+            </div>
+
+            <!-- MODULE CONTAINER -->
+            <div id="moduleContainer">
+                <div class="loading-spinner">
+                    <i class="fa fa-spinner fa-spin"></i>
+                    Loading Dashboard...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // CONFIGURATION - UPDATE THIS URL
+        // ============================================================
+               const API_URL = 'https://script.google.com/macros/s/AKfycbycwtcL6Mb7rpxq0RsxE4Nd8U7LPeSAdh6NFtW4XGKUNcI3IPnOor2anyP--AKgjzrJ/exec';
+
+        // ============================================================
+        // GLOBAL STATE
+        // ============================================================
+        let loggedInUser = null;
+        let allEmployees = [];
+        let currentModule = 'analysis';
+
+        // ============================================================
+        // API CALL
+        // ============================================================
+        function callAPI(action, params) {
+            return new Promise((resolve, reject) => {
+                // Always include email if logged in
+                if (loggedInUser && loggedInUser.email) {
+                    params = params || {};
+                    params.email = loggedInUser.email;
+                }
+
+                let url = API_BASE_URL + '?action=' + encodeURIComponent(action);
+                if (params) {
+                    url += '&params=' + encodeURIComponent(JSON.stringify(params));
+                }
+
+                console.log('📡 API Call:', action);
+
+                const callbackName = 'jsonp_cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                window[callbackName] = function(data) {
+                    delete window[callbackName];
+                    resolve(data);
+                };
+
+                const script = document.createElement('script');
+                script.src = url + '&callback=' + callbackName;
+                script.onerror = function() {
+                    delete window[callbackName];
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => resolve(data))
+                        .catch(err => reject(err));
+                };
+                document.body.appendChild(script);
+
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        delete window[callbackName];
+                        reject(new Error('Request timeout'));
+                    }
+                }, 15000);
+            });
+        }
+
+        // ============================================================
+        // LOGIN
+        // ============================================================
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const errorEl = document.getElementById('loginError');
+            const loginBtn = document.getElementById('loginBtn');
+
+            errorEl.classList.remove('show');
+
+            if (!email || !password) {
+                errorEl.textContent = 'Please enter both email and password.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            if (password.length !== 4 || !/^\d{4}$/.test(password)) {
+                errorEl.textContent = 'Password must be exactly 4 digits.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Authenticating...';
+
+            try {
+                const result = await callAPI('authenticateUser', { email, password });
+
+                if (result.success && result.user) {
+                    if (result.user.role === 'Employee') {
+                        errorEl.textContent = 'Access denied. Only Admin and ICD Head can login.';
+                        errorEl.classList.add('show');
+                        loginBtn.disabled = false;
+                        loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+                        return;
+                    }
+
+                    loggedInUser = result.user;
+                    sessionStorage.setItem('icd_user', JSON.stringify(result.user));
+                    sessionStorage.setItem('icd_email', email);
+
+                    // Show dashboard
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('dashboardContent').style.display = 'block';
+
+                    // Update header
+                    document.getElementById('headerUserName').textContent = loggedInUser.name || 'User';
+                    let roleDisplay = loggedInUser.role || 'Employee';
+                    if (loggedInUser.role === 'ICD Head' && loggedInUser.units && loggedInUser.units.length > 0) {
+                        roleDisplay += ' - ' + loggedInUser.units.join(', ');
+                    }
+                    document.getElementById('headerUserRole').textContent = roleDisplay;
+
+                    // Load data
+                    await loadEmployees();
+                    loadModule('analysis');
+
+                } else {
+                    errorEl.textContent = result.message || 'Invalid email or password.';
+                    errorEl.classList.add('show');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+                }
+            } catch(err) {
+                errorEl.textContent = 'Error connecting to server. Please try again.';
+                errorEl.classList.add('show');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+                console.error('Login error:', err);
+            }
+        }
+
+        function logout() {
+            if (loggedInUser && loggedInUser.email) {
+                callAPI('logout', { email: loggedInUser.email }).catch(() => {});
+            }
+            sessionStorage.removeItem('icd_user');
+            sessionStorage.removeItem('icd_email');
+            loggedInUser = null;
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtn').innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+        }
+
+        // ============================================================
+        // LOAD EMPLOYEES
+        // ============================================================
+        async function loadEmployees() {
+            try {
+                const result = await callAPI('getEmployees', {});
+                if (result.success) {
+                    allEmployees = result.employees || [];
+                    console.log('✅ Loaded ' + allEmployees.length + ' employees');
+                } else {
+                    console.error('Failed to load employees:', result.error);
+                    showToast('Error loading employees', 'error');
+                }
+            } catch(error) {
+                console.error('Error loading employees:', error);
+                showToast('Error loading data', 'error');
+            }
+        }
+
+        // ============================================================
+        // LOAD MODULE (Simplified)
+        // ============================================================
+        function loadModule(module) {
+            currentModule = module;
+
+            // Update tabs
+            document.querySelectorAll('.header-tabs .tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.includes(module === 'analysis' ? 'Analysis' :
+                'Restructure'));
+            });
+
+            const container = document.getElementById('moduleContainer');
+
+            if (module === 'analysis') {
+                renderAnalysis(container);
+            } else {
+                renderRestructure(container);
+            }
+        }
+
+        // ============================================================
+        // RENDER ANALYSIS (Simple Version)
+        // ============================================================
+        function renderAnalysis(container) {
+            const user = loggedInUser;
+            const isAdmin = user && user.role === 'Admin';
+            const isICDHead = user && user.role === 'ICD Head';
+
+            // Filter employees based on role
+            let displayEmployees = allEmployees;
+            if (isICDHead && user.units && user.units.length > 0) {
+                displayEmployees = allEmployees.filter(emp => user.units.includes(emp.Unit));
+            }
+
+            let html = `
+                <div style="background:white;padding:20px;border-radius:10px;margin-bottom:16px;">
+                    <h3 style="color:#1a3a6b;margin-bottom:10px;">📊 Analysis Dashboard</h3>
+                    <p style="color:#666;">Welcome, ${user ? user.name : 'User'}! You have ${displayEmployees.length} employees in your view.</p>
+                    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:10px;">
+                        <span style="background:#e8f0fe;padding:5px 15px;border-radius:20px;">👥 Total: ${displayEmployees.length}</span>
+                        <span style="background:#e8f0fe;padding:5px 15px;border-radius:20px;">📋 FTA: ${displayEmployees.filter(e => e.Type === 'FTA').length}</span>
+                        <span style="background:#e8f0fe;padding:5px 15px;border-radius:20px;">📋 VOU: ${displayEmployees.filter(e => e.Type === 'VOU').length}</span>
+                        <span style="background:#e8f0fe;padding:5px 15px;border-radius:20px;">📋 CNF: ${displayEmployees.filter(e => e.Type === 'CNF').length}</span>
+                    </div>
+                </div>
+            `;
+
+            // Employee cards
+            if (displayEmployees.length === 0) {
+                html += `<div class="no-data" style="text-align:center;padding:40px;background:white;border-radius:10px;">
+                    <i class="fa fa-users" style="font-size:36px;opacity:0.3;display:block;margin-bottom:12px;"></i>
+                    No employees found
+                </div>`;
+            } else {
+                html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">`;
+                displayEmployees.slice(0, 20).forEach(emp => {
+                    html += `
+                        <div style="background:white;border-radius:10px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #e8ecf1;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <strong style="color:#1a3a6b;">${escapeHtml(emp.Name || '')}</strong>
+                                <span style="font-size:10px;padding:2px 10px;border-radius:20px;background:${emp.Type === 'FTA' ? '#1a3a6b' : emp.Type === 'VOU' ? '#ff9800' : '#28a745'};color:white;">${emp.Type || ''}</span>
+                            </div>
+                            <div style="font-size:12px;color:#666;margin-top:5px;">
+                                ${escapeHtml(emp.Designation || '—')} | ${escapeHtml(emp.Unit || '—')}
+                            </div>
+                            <div style="font-size:12px;color:#666;">
+                                📍 ${escapeHtml(emp.WorkPlace || '—')}
+                            </div>
+                        </div>
+                    `;
+                });
+                if (displayEmployees.length > 20) {
+                    html +=
+                        `<div style="text-align:center;padding:20px;color:#888;">Showing first 20 of ${displayEmployees.length} employees</div>`;
+                }
+                html += `</div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        // RENDER RESTRUCTURE (Simple Version)
+        // ============================================================
+        function renderRestructure(container) {
+            container.innerHTML = `
+                <div style="background:white;padding:20px;border-radius:10px;">
+                    <h3 style="color:#1a3a6b;margin-bottom:10px;">📈 Restructure Dashboard</h3>
+                    <p style="color:#666;">Restructure module is loading...</p>
+                    <div style="margin-top:20px;">
+                        <div class="loading-spinner">
+                            <i class="fa fa-spinner fa-spin"></i>
+                            Loading restructure data...
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Load restructure data
+            loadRestructureData();
+        }
+
+        async function loadRestructureData() {
+            try {
+                const result = await callAPI('getWorkload', {});
+                if (result.success) {
+                    const container = document.getElementById('moduleContainer');
+                    const data = result.data || [];
+                    let html = `
+                        <div style="background:white;padding:20px;border-radius:10px;">
+                            <h3 style="color:#1a3a6b;margin-bottom:10px;">📈 Restructure Dashboard</h3>
+                            <p style="color:#666;">Workload data: ${data.length} rows loaded</p>
+                            <div style="margin-top:10px;overflow-x:auto;">
+                                <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                                    <thead>
+                                        <tr style="background:#1a3a6b;color:white;">
+                                            ${Object.keys(data[0] || {}).map(h => `<th style="padding:10px;text-align:left;">${h}</th>`).join('')}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${data.slice(0,10).map(row => `
+                                            <tr style="border-bottom:1px solid #e8ecf1;">
+                                                ${Object.values(row).map(val => `<td style="padding:8px;">${val !== undefined && val !== null ? val : ''}</td>`).join('')}
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                                ${data.length > 10 ? `<div style="text-align:center;padding:10px;color:#888;">Showing first 10 of ${data.length} rows</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML = html;
+                } else {
+                    showToast('Error loading restructure data', 'error');
+                }
+            } catch(error) {
+                console.error('Error loading restructure:', error);
+                showToast('Error loading restructure data', 'error');
+            }
+        }
+
+        // ============================================================
+        // HELPER FUNCTIONS
+        // ============================================================
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function showToast(message, type) {
+            const existing = document.querySelector('.custom-toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'custom-toast ' + (type || 'info');
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ============================================================
+        // CHECK EXISTING SESSION
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = sessionStorage.getItem('icd_user');
+            if (userData) {
+                try {
+                    loggedInUser = JSON.parse(userData);
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('dashboardContent').style.display = 'block';
+                    document.getElementById('headerUserName').textContent = loggedInUser.name || 'User';
+                    let roleDisplay = loggedInUser.role || 'Employee';
+                    if (loggedInUser.role === 'ICD Head' && loggedInUser.units && loggedInUser.units.length > 0) {
+                        roleDisplay += ' - ' + loggedInUser.units.join(', ');
+                    }
+                    document.getElementById('headerUserRole').textContent = roleDisplay;
+                    loadEmployees().then(() => loadModule('analysis'));
+                } catch(e) {
+                    console.error('Session restore error:', e);
+                    sessionStorage.removeItem('icd_user');
+                    sessionStorage.removeItem('icd_email');
+                }
+            }
+
+            // Enter key support
+            document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') handleLogin();
+            });
+            document.getElementById('loginEmail').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+            });
+        });
+
+        console.log('✅ ICD Dashboard loaded!');
+        console.log('📡 API URL:', API_BASE_URL);
+    </script>
+
+</body>
+</html>
