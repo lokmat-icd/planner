@@ -235,6 +235,106 @@
             color: white;
         }
 
+        /* Header Counts */
+        .header-counts {
+            display: flex;
+            align-items: center;
+            gap: 8px 14px;
+            flex-wrap: wrap;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .header-counts .count-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3px 12px 3px 10px;
+            border-radius: 18px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .header-counts .count-chip .count-label {
+            opacity: 0.7;
+            font-weight: 400;
+            font-size: 11px;
+        }
+
+        .header-counts .count-chip .count-value {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .header-counts .count-chip.total .count-value {
+            color: #7eb8ff;
+        }
+        .header-counts .count-chip.fta .count-value {
+            color: #7eb8ff;
+        }
+        .header-counts .count-chip.vou .count-value {
+            color: #ffb74d;
+        }
+        .header-counts .count-chip.cnf .count-value {
+            color: #81c784;
+        }
+        .header-counts .count-chip.icd-head .count-value {
+            color: #ce93d8;
+        }
+
+        .header-counts .count-divider {
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 14px;
+            font-weight: 100;
+        }
+
+        /* Header Skill Strength */
+        .header-stats {
+            display: flex;
+            gap: 8px 16px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 5px 16px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            width: 100%;
+        }
+
+        .header-stats .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+            font-weight: 600;
+            margin-right: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        .header-stats .skill-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 12px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 12px 2px 8px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .header-stats .skill-item .skill-name {
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .header-stats .skill-item .skill-count {
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0 6px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
         /* ===== LIMITED ACCESS BANNER ===== */
         .limited-access-banner {
             background: #fff3cd;
@@ -390,105 +490,6 @@
             font-size: 11px;
             font-weight: 500;
             margin: 0 2px;
-        }
-
-        /* ===== HEADER COUNTS ===== */
-        .header-counts {
-            display: flex;
-            align-items: center;
-            gap: 8px 14px;
-            flex-wrap: wrap;
-            flex: 1;
-            justify-content: center;
-        }
-
-        .header-counts .count-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 3px 12px 3px 10px;
-            border-radius: 18px;
-            font-size: 12px;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .header-counts .count-chip .count-label {
-            opacity: 0.7;
-            font-weight: 400;
-            font-size: 11px;
-        }
-
-        .header-counts .count-chip .count-value {
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .header-counts .count-chip.total .count-value {
-            color: #7eb8ff;
-        }
-        .header-counts .count-chip.fta .count-value {
-            color: #7eb8ff;
-        }
-        .header-counts .count-chip.vou .count-value {
-            color: #ffb74d;
-        }
-        .header-counts .count-chip.cnf .count-value {
-            color: #81c784;
-        }
-        .header-counts .count-chip.icd-head .count-value {
-            color: #ce93d8;
-        }
-
-        .header-counts .count-divider {
-            color: rgba(255, 255, 255, 0.15);
-            font-size: 14px;
-            font-weight: 100;
-        }
-
-        .header-stats {
-            display: flex;
-            gap: 8px 16px;
-            background: rgba(255, 255, 255, 0.06);
-            padding: 5px 16px;
-            border-radius: 8px;
-            flex-wrap: wrap;
-            align-items: center;
-            width: 100%;
-        }
-
-        .header-stats .stat-label {
-            font-size: 12px;
-            opacity: 0.8;
-            font-weight: 600;
-            margin-right: 4px;
-            letter-spacing: 0.3px;
-        }
-
-        .header-stats .skill-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            font-size: 12px;
-            font-weight: 500;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2px 12px 2px 8px;
-            border-radius: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .header-stats .skill-item .skill-name {
-            font-weight: 500;
-            font-size: 12px;
-        }
-
-        .header-stats .skill-item .skill-count {
-            font-weight: 700;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 0 6px;
-            border-radius: 10px;
-            font-size: 11px;
         }
 
         /* ===== COMMON UNIT PROJECTS ===== */
@@ -1820,11 +1821,7 @@
             }
         }
 
-        /* ===== DASHBOARD CONTAINER ===== */
-        #mainContent {
-            display: none;
-        }
-
+        /* ===== CONTAINERS ===== */
         #dashboardContent {
             display: none;
         }
@@ -1927,7 +1924,21 @@
         // ============================================================
         // CONFIGURATION - CHANGE THIS ONE URL
         // ============================================================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbw1FN0xUEy-PHzGdN6O2EfzZa6fXLlVfNpsHZfREuSEwdC0hbB2X9R4c4tILMFMS0FZ/exec';
+       const API_URL = 'https://script.google.com/macros/s/AKfycbycwtcL6Mb7rpxq0RsxE4Nd8U7LPeSAdh6NFtW4XGKUNcI3IPnOor2anyP--AKgjzrJ/exec';
+
+        // ============================================================
+        // EXPERTISE OPTIONS
+        // ============================================================
+        const EXPERTISE_OPTIONS = [
+            { value: '', description: 'Select an expertise...' },
+            { value: 'Normal Pagination', description: 'Designer mostly does pagination work' },
+            { value: 'Creative/Feature Page Design', description: 'Designer mostly does Creative/Feature page design' },
+            { value: 'Event/Creative Advt', description: 'Designer mostly does Event and Creative Advertisement work' },
+            { value: 'Notice/Display Advt', description: 'Designer mostly does Notice and Display Advertisement work' },
+            { value: 'Photo', description: 'Designer mostly does Photo editing work' },
+            { value: 'PDF Final/QC', description: 'Designer mostly does PDF Making & Checking work' },
+            { value: 'Allrounder', description: 'Designer is Expert in all work' }
+        ];
 
         // ============================================================
         // GLOBAL STATE
@@ -1955,36 +1966,38 @@
         let isSaving = false;
 
         // ============================================================
-        // EXPERTISE OPTIONS
-        // ============================================================
-        const EXPERTISE_OPTIONS = [
-            { value: '', description: 'Select an expertise...' },
-            { value: 'Normal Pagination', description: 'Designer mostly does pagination work' },
-            { value: 'Creative/Feature Page Design', description: 'Designer mostly does Creative/Feature page design' },
-            { value: 'Event/Creative Advt', description: 'Designer mostly does Event and Creative Advertisement work' },
-            { value: 'Notice/Display Advt', description: 'Designer mostly does Notice and Display Advertisement work' },
-            { value: 'Photo', description: 'Designer mostly does Photo editing work' },
-            { value: 'PDF Final/QC', description: 'Designer mostly does PDF Making & Checking work' },
-            { value: 'Allrounder', description: 'Designer is Expert in all work' }
-        ];
-
-        // ============================================================
-        // API CALL FUNCTION
+        // API CALL FUNCTION - ALWAYS INCLUDES EMAIL
         // ============================================================
         function callAPI(action, params) {
             return new Promise((resolve, reject) => {
-                let url = API_URL + '?action=' + encodeURIComponent(action);
-
-                // Always include email for session validation
+                // 🔥 CRITICAL: Always include email if user is logged in
                 if (loggedInUser && loggedInUser.email) {
                     params = params || {};
                     params.email = loggedInUser.email;
+                } else {
+                    // Try to get from session storage
+                    const userData = sessionStorage.getItem('icd_user');
+                    if (userData) {
+                        try {
+                            const user = JSON.parse(userData);
+                            if (user && user.email) {
+                                params = params || {};
+                                params.email = user.email;
+                                loggedInUser = user;
+                            }
+                        } catch(e) {}
+                    }
                 }
 
+                let url = API_BASE_URL + '?action=' + encodeURIComponent(action);
                 if (params) {
                     url += '&params=' + encodeURIComponent(JSON.stringify(params));
                 }
 
+                console.log('📡 API Call:', action);
+                console.log('📧 Email:', params ? params.email : 'Not set');
+
+                // Try JSONP first
                 const callbackName = 'jsonp_cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 window[callbackName] = function(data) {
                     delete window[callbackName];
@@ -2042,15 +2055,21 @@
                 const result = await callAPI('authenticateUser', { email, password });
 
                 if (result.success && result.user) {
+                    if (result.user.role === 'Employee') {
+                        errorEl.textContent = 'Access denied. Only Admin and ICD Head can login.';
+                        errorEl.classList.add('show');
+                        loginBtn.disabled = false;
+                        loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+                        return;
+                    }
+
                     loggedInUser = result.user;
                     sessionStorage.setItem('icd_user', JSON.stringify(result.user));
                     sessionStorage.setItem('icd_email', email);
 
-                    // Show dashboard
                     document.getElementById('loginContainer').style.display = 'none';
                     document.getElementById('dashboardContent').style.display = 'block';
 
-                    // Initialize dashboard
                     initDashboard();
                 } else {
                     errorEl.textContent = result.message || 'Invalid email or password.';
@@ -2076,12 +2095,10 @@
                 console.error('Logout error:', e);
             }
 
-            // Clear session
             sessionStorage.removeItem('icd_user');
             sessionStorage.removeItem('icd_email');
             loggedInUser = null;
 
-            // Show login
             document.getElementById('dashboardContent').style.display = 'none';
             document.getElementById('loginContainer').style.display = 'flex';
             document.getElementById('loginBtn').disabled = false;
@@ -2105,7 +2122,6 @@
 
             if (!loggedInUser) return;
 
-            // Display user info
             document.getElementById('headerUserName').textContent = loggedInUser.name || 'User';
             let roleDisplay = loggedInUser.role || 'Employee';
             if (loggedInUser.role === 'ICD Head' && loggedInUser.units && loggedInUser.units.length > 0) {
@@ -2113,35 +2129,56 @@
             }
             document.getElementById('headerUserRole').textContent = roleDisplay;
 
-            // Show limited access banner for ICD Head
             if (loggedInUser.role === 'ICD Head') {
                 document.getElementById('limitedAccessBanner').classList.add('visible');
             }
 
-            // Load the default module
             loadModule('analysis');
         }
 
         function switchModule(module) {
             currentModule = module;
-
-            // Update tabs
             document.querySelectorAll('.header-tabs .tab-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.module === module);
             });
-
             loadModule(module);
         }
 
         function loadModule(module) {
             const container = document.getElementById('moduleContainer');
-
             if (module === 'analysis') {
                 loadAnalysisModule(container);
             } else if (module === 'restructure') {
                 loadRestructureModule(container);
             }
         }
+
+        // ============================================================
+        // CHECK FOR EXISTING SESSION
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = sessionStorage.getItem('icd_user');
+            if (userData) {
+                try {
+                    loggedInUser = JSON.parse(userData);
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('dashboardContent').style.display = 'block';
+                    initDashboard();
+                } catch(e) {
+                    console.error('Session restore error:', e);
+                    sessionStorage.removeItem('icd_user');
+                    sessionStorage.removeItem('icd_email');
+                }
+            }
+
+            // Enter key support for login
+            document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') handleLogin();
+            });
+            document.getElementById('loginEmail').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+            });
+        });
 
         // ============================================================
         // ===== ANALYSIS MODULE =====
@@ -2281,7 +2318,6 @@
                 </div>
             `;
 
-            // Load data
             loadAnalysisData();
         }
 
@@ -2290,7 +2326,6 @@
         // ============================================================
         async function loadAnalysisData() {
             try {
-                // Get employees
                 const empResult = await callAPI('getEmployees', {});
                 if (empResult.success) {
                     allEmployees = empResult.employees || [];
@@ -2300,16 +2335,12 @@
                     return;
                 }
 
-                // Get units
                 const unitResult = await callAPI('getUnits', {});
                 if (unitResult.success) {
                     populateUnitFilter(unitResult.units || []);
                 }
 
-                // Update header stats
                 updateHeaderStats();
-
-                // Apply filters and render
                 applyFilters();
 
             } catch(error) {
@@ -2381,7 +2412,6 @@
                 </span>
             `;
 
-            // Skill Strength
             const skillContainer = document.getElementById('headerRow2');
             if (!skillContainer) return;
 
@@ -2414,13 +2444,11 @@
         // ============================================================
         function populateUnitFilter(units) {
             const select = document.getElementById('unitFilter');
-            const user = loggedInUser;
-
             select.innerHTML = '<option value="">All Units</option>';
 
             let availableUnits = units;
-            if (user && user.role === 'ICD Head' && user.units && user.units.length > 0) {
-                availableUnits = units.filter(u => user.units.includes(u.name));
+            if (loggedInUser && loggedInUser.role === 'ICD Head' && loggedInUser.units && loggedInUser.units.length > 0) {
+                availableUnits = units.filter(u => loggedInUser.units.includes(u.name));
             }
 
             availableUnits.sort((a, b) => a.name.localeCompare(b.name));
@@ -2517,7 +2545,6 @@
             const typeClass = getTypeBadgeClass(emp.Type);
             const cleanedEmail = (emp.Email || '').replace(/[^a-zA-Z0-9@._-]/g, '_');
 
-            // Expertise dropdown
             let optionsHtml = '';
             const currentExpertise = emp.Expertise || '';
             EXPERTISE_OPTIONS.forEach(option => {
@@ -2531,10 +2558,8 @@
                 '<i class="fa fa-info-circle"></i> ' + currentDesc :
                 '<span class="empty">Select an expertise to see description</span>';
 
-            // Special projects
             const projectText = getCleanSpecialProjects(emp);
 
-            // HOD status
             let hodStatusHtml = '<span class="hod-status na">Not Assessed</span>';
             let hodLevel = 'na';
             if (emp.HODEvaluation && emp.HODEvaluation.Overall_Assessed_Level) {
@@ -3387,8 +3412,7 @@
         // ===== RESTRUCTURE MODULE =====
         // ============================================================
         function loadRestructureModule(container) {
-            const user = loggedInUser;
-            const isAdmin = user && user.role === 'Admin';
+            const isAdmin = loggedInUser && loggedInUser.role === 'Admin';
 
             let tabs = [];
             if (isAdmin) {
@@ -3403,8 +3427,8 @@
                     { id: 'list-b', label: '📋 List-Model-B' },
                     { id: 'list-c', label: '📋 List-Model-C' }
                 ];
-            } else if (user && user.role === 'ICD Head' && user.units) {
-                user.units.forEach(unit => {
+            } else if (loggedInUser && loggedInUser.role === 'ICD Head' && loggedInUser.units) {
+                loggedInUser.units.forEach(unit => {
                     tabs.push({ id: 'pub_' + unit, label: '📰 ' + unit });
                 });
             }
@@ -3434,11 +3458,9 @@
 
         function switchRestructureTab(tabId) {
             currentRestructureTab = tabId;
-
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.tab === tabId);
             });
-
             loadRestructureTabContent(tabId);
         }
 
@@ -4248,35 +4270,9 @@
             }, 3000);
         }
 
-        // ============================================================
-        // ENTER KEY SUPPORT
-        // ============================================================
-        document.getElementById('loginPassword').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') handleLogin();
-        });
-        document.getElementById('loginEmail').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') document.getElementById('loginPassword').focus();
-        });
-
-        // ============================================================
-        // CHECK SESSION
-        // ============================================================
-        (function() {
-            const userData = sessionStorage.getItem('icd_user');
-            if (userData) {
-                try {
-                    loggedInUser = JSON.parse(userData);
-                    document.getElementById('loginContainer').style.display = 'none';
-                    document.getElementById('dashboardContent').style.display = 'block';
-                    initDashboard();
-                } catch(e) {
-                    // Invalid session, show login
-                }
-            }
-        })();
-
         console.log('✅ ICD Unified Dashboard loaded!');
-        console.log('📡 API URL:', API_URL);
+        console.log('📡 API URL:', API_BASE_URL);
     </script>
+
 </body>
 </html>
