@@ -1,0 +1,4282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICD Unified Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* ============================================================
+           ALL STYLES - Embedded
+           ============================================================ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container-fluid {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ===== LOGIN PAGE ===== */
+        .login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a3a6b 0%, #2a5298 100%);
+        }
+
+        .login-wrapper {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .login-wrapper .logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-wrapper .logo img {
+            width: 100%;
+            height: auto;
+            max-height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .login-wrapper h3 {
+            text-align: center;
+            color: #1a3a6b;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .login-wrapper .sub {
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .login-wrapper .form-group {
+            margin-bottom: 18px;
+        }
+
+        .login-wrapper .form-group label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .login-wrapper .form-group input {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px 14px;
+            font-size: 14px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .login-wrapper .form-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.15);
+        }
+
+        .login-wrapper .login-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #1a3a6b 0%, #2a5298 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-wrapper .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.3);
+        }
+
+        .login-wrapper .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-wrapper .login-error {
+            color: #dc3545;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .login-wrapper .login-error.show {
+            display: block;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1a3a6b 0%, #2a5298 100%);
+            color: white;
+            padding: 12px 22px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-row1 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px 15px;
+            min-height: 48px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            gap: 12px;
+        }
+
+        .header-logo {
+            height: 42px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px 4px 16px;
+            border-radius: 30px;
+            flex-shrink: 0;
+        }
+
+        .header-user .user-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .header-user .user-role {
+            font-size: 10px;
+            opacity: 0.7;
+        }
+
+        .header-user .logout-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .header-user .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .header-tabs {
+            display: flex;
+            gap: 4px;
+            padding: 8px 0 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .header-tabs .tab-btn {
+            padding: 6px 16px;
+            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .header-tabs .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .header-tabs .tab-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* ===== LIMITED ACCESS BANNER ===== */
+        .limited-access-banner {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .limited-access-banner.visible {
+            display: block;
+        }
+
+        /* ===== FILTERS ===== */
+        .filters-section {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            font-size: 12px;
+            color: #444;
+            margin: 0;
+        }
+
+        .filter-group select,
+        .filter-group input[type="text"] {
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 12px;
+            min-width: 120px;
+        }
+
+        .filter-group select:focus,
+        .filter-group input[type="text"]:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.15);
+        }
+
+        .type-filters {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .type-btn {
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .type-btn:hover {
+            background: #e8ecf1;
+        }
+
+        .type-btn.active {
+            background: #2a5298;
+            color: white;
+            border-color: #2a5298;
+        }
+
+        .type-count {
+            font-size: 10px;
+            color: #666;
+            margin-left: 2px;
+        }
+
+        .type-btn.active .type-count {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-box {
+            padding: 5px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+            min-width: 160px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.15);
+        }
+
+        /* ===== STATS BAR ===== */
+        .stats-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            background: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 18px;
+            align-items: center;
+        }
+
+        .stats-bar .stat-item {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .stats-bar .stat-item strong {
+            color: #1a3a6b;
+            font-size: 14px;
+        }
+
+        .stats-bar .stat-divider {
+            color: #ddd;
+        }
+
+        .stats-bar .stat-expertise {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .stats-bar .stat-expertise strong {
+            color: #1a3a6b;
+            font-size: 13px;
+        }
+
+        .stats-bar .expertise-tag-stat {
+            background: #e8f0fe;
+            color: #1a3a6b;
+            padding: 1px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            margin: 0 2px;
+        }
+
+        /* ===== HEADER COUNTS ===== */
+        .header-counts {
+            display: flex;
+            align-items: center;
+            gap: 8px 14px;
+            flex-wrap: wrap;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .header-counts .count-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3px 12px 3px 10px;
+            border-radius: 18px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .header-counts .count-chip .count-label {
+            opacity: 0.7;
+            font-weight: 400;
+            font-size: 11px;
+        }
+
+        .header-counts .count-chip .count-value {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .header-counts .count-chip.total .count-value {
+            color: #7eb8ff;
+        }
+        .header-counts .count-chip.fta .count-value {
+            color: #7eb8ff;
+        }
+        .header-counts .count-chip.vou .count-value {
+            color: #ffb74d;
+        }
+        .header-counts .count-chip.cnf .count-value {
+            color: #81c784;
+        }
+        .header-counts .count-chip.icd-head .count-value {
+            color: #ce93d8;
+        }
+
+        .header-counts .count-divider {
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 14px;
+            font-weight: 100;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 8px 16px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 5px 16px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            width: 100%;
+        }
+
+        .header-stats .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+            font-weight: 600;
+            margin-right: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        .header-stats .skill-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 12px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 12px 2px 8px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .header-stats .skill-item .skill-name {
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .header-stats .skill-item .skill-count {
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0 6px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        /* ===== COMMON UNIT PROJECTS ===== */
+        .common-unit-projects {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 18px;
+            border-left: 4px solid #6f42c1;
+            display: none;
+        }
+
+        .common-unit-projects.visible {
+            display: block;
+        }
+
+        .cup-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .cup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .cup-title {
+            font-weight: 600;
+            color: #1a3a6b;
+            font-size: 13px;
+        }
+
+        .cup-title i {
+            color: #6f42c1;
+            margin-right: 6px;
+        }
+
+        .cup-title .cup-unit-name {
+            background: #e8ecf1;
+            color: #1a3a6b;
+            padding: 1px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-left: 6px;
+        }
+
+        .cup-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cup-save-status {
+            font-size: 10px;
+            display: none;
+        }
+
+        .cup-save-status.show {
+            display: inline-block;
+        }
+        .cup-save-status.saving {
+            color: #ff9800;
+        }
+        .cup-save-status.saved {
+            color: #28a745;
+        }
+        .cup-save-status.error {
+            color: #dc3545;
+        }
+
+        .cup-save-btn {
+            padding: 3px 14px;
+            border-radius: 4px;
+            border: none;
+            background: #6f42c1;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: none;
+        }
+
+        .cup-save-btn:hover {
+            background: #5a32a3;
+        }
+        .cup-save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .cup-textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+            transition: border-color 0.2s ease;
+            color: #444;
+            line-height: 1.5;
+            background: #fafbfc;
+        }
+
+        .cup-textarea:focus {
+            outline: none;
+            border-color: #6f42c1;
+            box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.15);
+        }
+
+        .cup-textarea:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* ===== TEAM WORKLOAD ===== */
+        .team-workload-bar {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 18px;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+
+        .team-workload-bar.visible {
+            display: block;
+        }
+
+        .tw-title {
+            font-weight: 600;
+            color: #1a3a6b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .tw-title i {
+            color: #28a745;
+            margin-right: 6px;
+        }
+
+        .tw-container {
+            display: flex;
+            gap: 16px;
+            min-height: 100px;
+        }
+
+        .tw-container.full-width .tw-left {
+            flex: 1;
+        }
+        .tw-container.full-width .tw-right {
+            display: none;
+        }
+
+        .tw-left {
+            flex: 1.2;
+            background: #f8f9fa;
+            padding: 10px 14px;
+            border-radius: 8px;
+        }
+
+        .tw-right {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tw-editions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 16px;
+        }
+
+        .tw-edition {
+            font-size: 12px;
+        }
+
+        .tw-edition strong {
+            color: #1a3a6b;
+        }
+
+        .tw-total {
+            font-weight: 600;
+            color: #28a745;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .tw-employees {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .tw-remark-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            flex-shrink: 0;
+        }
+
+        .tw-remark-header label {
+            font-weight: 600;
+            font-size: 12px;
+            color: #555;
+            margin: 0;
+        }
+
+        .tw-remark-header .save-btn {
+            padding: 2px 12px;
+            border-radius: 4px;
+            border: none;
+            background: #28a745;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tw-remark-header .save-btn:hover {
+            background: #218838;
+        }
+        .tw-remark-header .save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .tw-remark-header .save-btn.saved {
+            background: #6c757d;
+        }
+
+        .tw-remark-textarea {
+            flex: 1;
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: inherit;
+            resize: none;
+            min-height: 50px;
+            transition: border-color 0.2s ease;
+        }
+
+        .tw-remark-textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.1);
+        }
+
+        /* ===== WORK PLACE OTHER WORKLOAD ===== */
+        .wpow-bar {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 18px;
+            border-left: 4px solid #ff9800;
+            display: none;
+        }
+
+        .wpow-bar.visible {
+            display: block;
+        }
+
+        .wpow-title {
+            font-weight: 600;
+            color: #1a3a6b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .wpow-title i {
+            color: #ff9800;
+            margin-right: 6px;
+        }
+
+        .wpow-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 16px;
+            padding: 2px 0;
+        }
+
+        .wpow-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .wpow-item label {
+            font-weight: 600;
+            color: #555;
+            font-size: 11px;
+            margin: 0;
+        }
+
+        .wpow-item input {
+            padding: 3px 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            width: 55px;
+            text-align: center;
+            transition: border-color 0.2s ease;
+        }
+
+        .wpow-item input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.1);
+        }
+
+        .wpow-item input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .wpow-other-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .wpow-other-item label {
+            font-weight: 600;
+            color: #555;
+            font-size: 11px;
+            white-space: nowrap;
+            margin: 0;
+        }
+
+        .wpow-other-item textarea {
+            padding: 3px 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: inherit;
+            resize: none;
+            width: 100%;
+            min-width: 80px;
+            max-width: 200px;
+            min-height: 26px;
+            height: 26px;
+            transition: border-color 0.2s ease;
+            line-height: 1.3;
+        }
+
+        .wpow-other-item textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.1);
+        }
+
+        .wpow-other-item textarea:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .wpow-save-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 2px;
+        }
+
+        .wpow-save-status {
+            font-size: 10px;
+            display: none;
+        }
+
+        .wpow-save-status.show {
+            display: inline-block;
+        }
+        .wpow-save-status.saving {
+            color: #ff9800;
+        }
+        .wpow-save-status.saved {
+            color: #28a745;
+        }
+        .wpow-save-status.error {
+            color: #dc3545;
+        }
+
+        .wpow-save-btn {
+            padding: 3px 14px;
+            border-radius: 4px;
+            border: none;
+            background: #28a745;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: none;
+        }
+
+        .wpow-save-btn:hover {
+            background: #218838;
+        }
+        .wpow-save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ===== EMPLOYEE GRID ===== */
+        .employee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 16px;
+        }
+
+        .employee-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            transition: all 0.25s ease;
+            border: 1px solid #e8ecf1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .employee-card:hover {
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.10);
+            transform: translateY(-3px);
+        }
+
+        .card-header {
+            padding: 14px 16px 10px;
+            border-bottom: 1px solid #f0f2f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .card-header .name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+
+        .card-header .badge-group {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .card-header .role-badge {
+            font-size: 10px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .role-badge.admin {
+            background: #dc3545;
+            color: white;
+        }
+        .role-badge.icd-head {
+            background: #ff9800;
+            color: white;
+        }
+        .role-badge.employee {
+            background: #2a5298;
+            color: white;
+        }
+        .role-badge.unknown {
+            background: #6c757d;
+            color: white;
+        }
+
+        .type-badge {
+            font-size: 10px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            background: #e8ecf1;
+            color: #333;
+        }
+
+        .type-badge.fta {
+            background: #1a3a6b;
+            color: white;
+        }
+        .type-badge.vou {
+            background: #ff9800;
+            color: white;
+        }
+        .type-badge.cnf {
+            background: #28a745;
+            color: white;
+        }
+
+        .card-body {
+            padding: 12px 16px 14px;
+            flex: 1;
+        }
+
+        .detail-row-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px 6px;
+            font-size: 12px;
+            color: #444;
+            margin-bottom: 3px;
+            align-items: baseline;
+        }
+
+        .detail-row-inline .label {
+            color: #888;
+            font-weight: 500;
+        }
+
+        .detail-row-inline .value {
+            color: #222;
+            word-break: break-word;
+        }
+
+        .detail-row-inline .divider {
+            color: #ccc;
+            margin: 0 3px;
+        }
+
+        /* ===== EXPERTISE ===== */
+        .expertise-editable {
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid #f0f2f5;
+        }
+
+        .expertise-editable .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .expertise-editable .exp-header label {
+            font-weight: 600;
+            font-size: 11px;
+            color: #555;
+            margin: 0;
+        }
+
+        .expertise-editable .exp-select {
+            width: 100%;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: inherit;
+            background: white;
+            color: #444;
+            transition: border-color 0.2s ease;
+        }
+
+        .expertise-editable .exp-select:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.1);
+        }
+
+        .expertise-editable .exp-select:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .exp-save-status {
+            font-size: 10px;
+            margin-left: 6px;
+            display: none;
+        }
+
+        .exp-save-status.show {
+            display: inline-block;
+        }
+        .exp-save-status.saving {
+            color: #ff9800;
+        }
+        .exp-save-status.saved {
+            color: #28a745;
+        }
+        .exp-save-status.error {
+            color: #dc3545;
+        }
+
+        .expertise-description {
+            margin-top: 3px;
+            padding: 3px 8px;
+            background: #f0f7ff;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #1a3a6b;
+            min-height: 22px;
+            border-left: 3px solid #2a5298;
+        }
+
+        .expertise-description i {
+            color: #2a5298;
+            margin-right: 3px;
+        }
+
+        .expertise-description .empty {
+            color: #999;
+        }
+
+        /* ===== WORKLOAD SECTION ===== */
+        .workload-section {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #f0f2f5;
+        }
+
+        .workload-section .wl-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 4px;
+        }
+
+        .workload-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px 6px;
+        }
+
+        .workload-item {
+            background: #f5f7fa;
+            font-size: 10px;
+            padding: 1px 8px;
+            border-radius: 12px;
+            color: #444;
+        }
+
+        .workload-item .num {
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+
+        /* ===== SPECIAL PROJECTS ===== */
+        .special-projects-editable {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #f0f2f5;
+        }
+
+        .special-projects-editable .sp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .special-projects-editable .sp-header label {
+            font-weight: 600;
+            font-size: 11px;
+            color: #555;
+            margin: 0;
+        }
+
+        .special-projects-editable .sp-header .sp-save-btn {
+            padding: 2px 10px;
+            border-radius: 4px;
+            border: none;
+            background: #28a745;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .special-projects-editable .sp-header .sp-save-btn:hover {
+            background: #218838;
+        }
+        .special-projects-editable .sp-header .sp-save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .special-projects-editable .sp-header .sp-save-btn.saved {
+            background: #6c757d;
+        }
+
+        .special-projects-editable .sp-textarea {
+            width: 100%;
+            padding: 5px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 40px;
+            transition: border-color 0.2s ease;
+            color: #444;
+            line-height: 1.4;
+        }
+
+        .special-projects-editable .sp-textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.1);
+        }
+
+        .special-projects-editable .sp-textarea:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .card-footer {
+            padding: 8px 16px 12px;
+            border-top: 1px solid #f0f2f5;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            background: #fafbfc;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .card-footer .hod-status {
+            font-size: 10px;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .hod-status.de {
+            background: #d4edda;
+            color: #155724;
+        }
+        .hod-status.me {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .hod-status.ni {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .hod-status.na {
+            background: #e2e3e5;
+            color: #555;
+        }
+
+        /* ===== RESTRUCTURE TABLES ===== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            background: #1a3a6b;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e8ecf1;
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover td {
+            background: #f8f9fa;
+        }
+
+        .data-table .total-row {
+            background: #e8ecf1 !important;
+            font-weight: 700;
+        }
+
+        .data-table .total-row td {
+            border-top: 2px solid #1a3a6b;
+        }
+
+        .data-table .editable-input {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            width: 100%;
+            min-width: 120px;
+            background: white;
+            transition: border-color 0.2s ease;
+        }
+
+        .data-table .editable-input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.1);
+        }
+
+        .data-table .editable-input.text-input {
+            min-width: 140px;
+        }
+
+        .data-table .editable-input.changed {
+            border-color: #ff9800;
+            background: #fff8e1;
+        }
+
+        .table-responsive-wrapper {
+            max-height: 600px;
+            overflow-y: auto;
+            border-radius: 8px;
+            border: 1px solid #e8ecf1;
+        }
+
+        /* ===== SECTION HEADER ===== */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            color: #1a3a6b;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .section-header .totals-box {
+            display: flex;
+            gap: 20px;
+            background: #f0f2f5;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .section-header .totals-box span {
+            font-weight: 600;
+        }
+
+        .section-header .totals-box .num {
+            color: #1a3a6b;
+            font-size: 16px;
+        }
+
+        .section-header .summary-totals {
+            font-size: 12px;
+            color: #555;
+            background: #f0f2f5;
+            padding: 4px 14px;
+            border-radius: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 14px;
+        }
+
+        .section-header .summary-totals span {
+            white-space: nowrap;
+        }
+
+        .section-header .summary-totals strong {
+            color: #1a3a6b;
+        }
+
+        .save-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e8ecf1;
+        }
+
+        .save-area .save-btn {
+            padding: 8px 24px;
+            border: none;
+            border-radius: 6px;
+            background: #28a745;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .save-area .save-btn:hover {
+            background: #218838;
+        }
+        .save-area .save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .save-area .save-btn.saved {
+            background: #6c757d;
+        }
+
+        .save-status {
+            font-size: 12px;
+            display: none;
+        }
+
+        .save-status.show {
+            display: inline-block;
+        }
+        .save-status.saving {
+            color: #ff9800;
+        }
+        .save-status.saved {
+            color: #28a745;
+        }
+        .save-status.error {
+            color: #dc3545;
+        }
+
+        /* ===== PUBLICATION UNITS ===== */
+        .unit-publication,
+        .unit-employee {
+            margin-bottom: 24px;
+            border: 1px solid #e8ecf1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .unit-publication .unit-header,
+        .unit-employee .unit-header {
+            background: #f0f2f5;
+            padding: 10px 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #1a3a6b;
+            transition: background 0.2s ease;
+        }
+
+        .unit-publication .unit-header:hover,
+        .unit-employee .unit-header:hover {
+            background: #e8ecf1;
+        }
+
+        .unit-publication .unit-header .unit-totals,
+        .unit-employee .unit-header .unit-totals {
+            font-weight: 400;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .unit-publication .unit-header .unit-totals span,
+        .unit-employee .unit-header .unit-totals span {
+            margin-left: 12px;
+        }
+
+        .unit-publication .unit-header .unit-totals .num,
+        .unit-employee .unit-header .unit-totals .num {
+            font-weight: 700;
+            color: #1a3a6b;
+        }
+
+        .unit-publication .unit-body,
+        .unit-employee .unit-body {
+            padding: 0 16px 16px;
+            display: none;
+        }
+
+        .unit-publication .unit-body.open,
+        .unit-employee .unit-body.open {
+            display: block;
+        }
+
+        .unit-publication .unit-body .data-table,
+        .unit-employee .unit-body .data-table {
+            font-size: 12px;
+        }
+
+        .unit-publication .unit-body .data-table th,
+        .unit-employee .unit-body .data-table th {
+            background: #2a5298;
+        }
+
+        .unit-publication .unit-body .data-table td,
+        .unit-employee .unit-body .data-table td {
+            padding: 6px 10px;
+        }
+
+        .pub-collapse-icon {
+            transition: transform 0.2s ease;
+            display: inline-block;
+        }
+
+        .pub-collapse-icon.open {
+            transform: rotate(90deg);
+        }
+
+        /* ===== EMPLOYEE TABLE ===== */
+        .employee-table th {
+            text-align: center;
+            font-size: 13px;
+            padding: 10px 12px;
+        }
+
+        .employee-table td {
+            text-align: center;
+            padding: 6px 10px;
+            vertical-align: middle;
+        }
+
+        .employee-table .text-cnf {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .unit-employee .unit-body .data-table td:first-child {
+            border-right: 1px solid #e8ecf1;
+        }
+
+        .unit-employee .unit-body .data-table td:last-child {
+            border-left: 1px solid #e8ecf1;
+        }
+
+        /* ===== LOADING & NO DATA ===== */
+        .loading-spinner {
+            text-align: center;
+            padding: 50px 20px;
+            color: #666;
+        }
+
+        .loading-spinner i {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: block;
+            color: #2a5298;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+
+        .no-data i {
+            font-size: 36px;
+            opacity: 0.3;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+            background: white;
+            border-radius: 12px;
+            grid-column: 1 / -1;
+        }
+
+        .no-results i {
+            font-size: 36px;
+            opacity: 0.3;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        /* ===== TOAST ===== */
+        .custom-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .custom-toast.success {
+            background: #28a745;
+        }
+        .custom-toast.error {
+            background: #dc3545;
+        }
+        .custom-toast.info {
+            background: #17a2b8;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header-row1 {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .header-counts {
+                justify-content: center;
+            }
+
+            .header-stats {
+                justify-content: center;
+            }
+
+            .filters-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                justify-content: center;
+            }
+
+            .employee-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                justify-content: center;
+            }
+
+            .tw-container {
+                flex-direction: column;
+            }
+
+            .tw-left,
+            .tw-right {
+                flex: none;
+            }
+            .tw-right {
+                min-height: 120px;
+            }
+
+            .wpow-row {
+                gap: 8px 12px;
+            }
+            .wpow-item input {
+                width: 50px;
+            }
+            .wpow-other-item textarea {
+                min-width: 80px;
+                max-width: 150px;
+            }
+
+            .common-unit-projects .cup-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .login-wrapper {
+                padding: 30px 25px;
+                margin: 15px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .section-header .totals-box {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .section-header .summary-totals {
+                justify-content: center;
+            }
+
+            .data-table {
+                font-size: 11px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 5px 8px;
+            }
+
+            .table-responsive-wrapper {
+                max-height: 400px;
+            }
+
+            .header-tabs .tab-btn {
+                padding: 4px 10px;
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .card-footer {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .tw-remark-header {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .special-projects-editable .sp-header {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .expertise-editable .exp-header {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .wpow-row {
+                gap: 4px 8px;
+            }
+
+            .wpow-item input {
+                width: 45px;
+                font-size: 11px;
+            }
+
+            .wpow-other-item textarea {
+                min-width: 60px;
+                max-width: 100px;
+                font-size: 11px;
+            }
+
+            .header-stats .skill-item {
+                font-size: 11px;
+                padding: 1px 8px;
+            }
+
+            .header-stats .skill-item .skill-name {
+                font-size: 11px;
+            }
+
+            .header-stats .skill-item .skill-count {
+                font-size: 10px;
+            }
+
+            .header-stats .stat-label {
+                font-size: 11px;
+            }
+
+            .common-unit-projects .cup-textarea {
+                min-height: 50px;
+                font-size: 12px;
+            }
+
+            .header-user {
+                padding: 3px 8px;
+            }
+
+            .header-counts .count-chip {
+                font-size: 11px;
+                padding: 2px 8px;
+            }
+
+            .header-counts .count-chip .count-value {
+                font-size: 12px;
+            }
+
+            .header-counts .count-chip .count-label {
+                font-size: 10px;
+            }
+
+            .data-table .editable-input {
+                min-width: 60px;
+            }
+
+            .data-table .editable-input.text-input {
+                min-width: 80px;
+            }
+
+            .header-tabs .tab-btn {
+                padding: 4px 8px;
+                font-size: 10px;
+            }
+
+            .section-header h3 {
+                font-size: 15px;
+            }
+
+            .section-header .summary-totals {
+                font-size: 11px;
+                gap: 2px 8px;
+            }
+        }
+
+        /* ===== DASHBOARD CONTAINER ===== */
+        #mainContent {
+            display: none;
+        }
+
+        #dashboardContent {
+            display: none;
+        }
+
+        #loginContainer {
+            display: flex;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    LOGIN CONTAINER
+    ============================================================ -->
+    <div id="loginContainer">
+        <div class="login-page">
+            <div class="login-wrapper">
+                <div class="logo">
+                    <img src="https://lh3.googleusercontent.com/d/1uLdST5g0rbVFpAV_i7qJXAI1nZJo20lQ" alt="LOKMAT" onerror="this.style.display='none'">
+                    <h3>ICD Unified Dashboard</h3>
+                    <p class="sub">Task · Execution · Delivery — Unified Platform</p>
+                </div>
+
+                <div id="loginForm">
+                    <div class="form-group">
+                        <label><i class="fa fa-envelope"></i> Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa fa-lock"></i> Password (Last 4 digits of Mobile)</label>
+                        <input type="password" id="loginPassword" placeholder="Enter last 4 digits" maxlength="4" autocomplete="current-password">
+                    </div>
+                    <button class="login-btn" id="loginBtn" onclick="handleLogin()">
+                        <i class="fa fa-sign-in"></i> Sign In
+                    </button>
+                    <div class="login-error" id="loginError">Invalid email or password. Please try again.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    DASHBOARD CONTAINER
+    ============================================================ -->
+    <div id="dashboardContent">
+        <div class="container-fluid" id="mainContent">
+            <!-- HEADER -->
+            <div class="header">
+                <div class="header-row1">
+                    <div class="header-left">
+                        <img src="https://lh3.googleusercontent.com/d/1uLdST5g0rbVFpAV_i7qJXAI1nZJo20lQ" alt="LOKMAT" class="header-logo" onerror="this.style.display='none'">
+                        <span style="font-size:16px;font-weight:600;margin-left:8px;">ICD Unified</span>
+                    </div>
+                    <div id="headerCounts"></div>
+                    <div class="header-user">
+                        <div>
+                            <div class="user-name" id="headerUserName">Loading...</div>
+                            <div class="user-role" id="headerUserRole">Role</div>
+                        </div>
+                        <button class="logout-btn" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+                    </div>
+                </div>
+                <!-- Tabs -->
+                <div class="header-tabs" id="headerTabs">
+                    <button class="tab-btn active" data-module="analysis" onclick="switchModule('analysis')">
+                        <i class="fa fa-dashboard"></i> Analysis
+                    </button>
+                    <button class="tab-btn" data-module="restructure" onclick="switchModule('restructure')">
+                        <i class="fa fa-cubes"></i> Restructure
+                    </button>
+                </div>
+                <!-- Skill Strength Row -->
+                <div id="headerRow2"></div>
+            </div>
+
+            <!-- LIMITED ACCESS BANNER -->
+            <div class="limited-access-banner" id="limitedAccessBanner">
+                <i class="fa fa-info-circle"></i>
+                <strong>Limited Access:</strong> You can only view and edit data for your assigned units.
+            </div>
+
+            <!-- MODULE CONTAINER -->
+            <div id="moduleContainer">
+                <div class="loading-spinner">
+                    <i class="fa fa-spinner fa-spin"></i>
+                    Loading Dashboard...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    ALL JAVASCRIPT - Embedded
+    ============================================================ -->
+    <script>
+        // ============================================================
+        // CONFIGURATION - CHANGE THIS ONE URL
+        // ============================================================
+        const API_URL = 'https://script.google.com/macros/s/AKfycbw1FN0xUEy-PHzGdN6O2EfzZa6fXLlVfNpsHZfREuSEwdC0hbB2X9R4c4tILMFMS0FZ/exec';
+
+        // ============================================================
+        // GLOBAL STATE
+        // ============================================================
+        let loggedInUser = null;
+        let allEmployees = [];
+        let filteredEmployees = [];
+        let currentUnit = '';
+        let currentWorkplace = '';
+        let currentTypeFilter = 'all';
+        let currentWPOWData = {};
+        let currentRemark = '';
+        let remarkChanged = false;
+        let remarkSaving = false;
+        let wpowChanged = false;
+        let wpowSaving = false;
+        let currentCommonUnit = '';
+        let currentCommonProjects = '';
+        let cupChanged = false;
+        let cupSaving = false;
+        let currentModule = 'analysis';
+        let restructureData = {};
+        let currentRestructureTab = 'workload';
+        let publicationChanges = {};
+        let isSaving = false;
+
+        // ============================================================
+        // EXPERTISE OPTIONS
+        // ============================================================
+        const EXPERTISE_OPTIONS = [
+            { value: '', description: 'Select an expertise...' },
+            { value: 'Normal Pagination', description: 'Designer mostly does pagination work' },
+            { value: 'Creative/Feature Page Design', description: 'Designer mostly does Creative/Feature page design' },
+            { value: 'Event/Creative Advt', description: 'Designer mostly does Event and Creative Advertisement work' },
+            { value: 'Notice/Display Advt', description: 'Designer mostly does Notice and Display Advertisement work' },
+            { value: 'Photo', description: 'Designer mostly does Photo editing work' },
+            { value: 'PDF Final/QC', description: 'Designer mostly does PDF Making & Checking work' },
+            { value: 'Allrounder', description: 'Designer is Expert in all work' }
+        ];
+
+        // ============================================================
+        // API CALL FUNCTION
+        // ============================================================
+        function callAPI(action, params) {
+            return new Promise((resolve, reject) => {
+                let url = API_URL + '?action=' + encodeURIComponent(action);
+
+                // Always include email for session validation
+                if (loggedInUser && loggedInUser.email) {
+                    params = params || {};
+                    params.email = loggedInUser.email;
+                }
+
+                if (params) {
+                    url += '&params=' + encodeURIComponent(JSON.stringify(params));
+                }
+
+                const callbackName = 'jsonp_cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                window[callbackName] = function(data) {
+                    delete window[callbackName];
+                    resolve(data);
+                };
+
+                const script = document.createElement('script');
+                script.src = url + '&callback=' + callbackName;
+                script.onerror = function() {
+                    delete window[callbackName];
+                    // Fallback to fetch
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => resolve(data))
+                        .catch(err => reject(err));
+                };
+                document.body.appendChild(script);
+
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        delete window[callbackName];
+                        reject(new Error('Request timeout'));
+                    }
+                }, 15000);
+            });
+        }
+
+        // ============================================================
+        // AUTHENTICATION FUNCTIONS
+        // ============================================================
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const errorEl = document.getElementById('loginError');
+            const loginBtn = document.getElementById('loginBtn');
+
+            errorEl.classList.remove('show');
+
+            if (!email || !password) {
+                errorEl.textContent = 'Please enter both email and password.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            if (password.length !== 4 || !/^\d{4}$/.test(password)) {
+                errorEl.textContent = 'Password must be exactly 4 digits.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Authenticating...';
+
+            try {
+                const result = await callAPI('authenticateUser', { email, password });
+
+                if (result.success && result.user) {
+                    loggedInUser = result.user;
+                    sessionStorage.setItem('icd_user', JSON.stringify(result.user));
+                    sessionStorage.setItem('icd_email', email);
+
+                    // Show dashboard
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('dashboardContent').style.display = 'block';
+
+                    // Initialize dashboard
+                    initDashboard();
+                } else {
+                    errorEl.textContent = result.message || 'Invalid email or password.';
+                    errorEl.classList.add('show');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+                }
+            } catch(err) {
+                errorEl.textContent = 'Error connecting to server. Please try again.';
+                errorEl.classList.add('show');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+                console.error('Login error:', err);
+            }
+        }
+
+        async function logout() {
+            try {
+                if (loggedInUser && loggedInUser.email) {
+                    await callAPI('logout', { email: loggedInUser.email });
+                }
+            } catch(e) {
+                console.error('Logout error:', e);
+            }
+
+            // Clear session
+            sessionStorage.removeItem('icd_user');
+            sessionStorage.removeItem('icd_email');
+            loggedInUser = null;
+
+            // Show login
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtn').innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+        }
+
+        // ============================================================
+        // DASHBOARD INITIALIZATION
+        // ============================================================
+        function initDashboard() {
+            if (!loggedInUser) {
+                const userData = sessionStorage.getItem('icd_user');
+                if (userData) {
+                    try {
+                        loggedInUser = JSON.parse(userData);
+                    } catch(e) {
+                        return;
+                    }
+                }
+            }
+
+            if (!loggedInUser) return;
+
+            // Display user info
+            document.getElementById('headerUserName').textContent = loggedInUser.name || 'User';
+            let roleDisplay = loggedInUser.role || 'Employee';
+            if (loggedInUser.role === 'ICD Head' && loggedInUser.units && loggedInUser.units.length > 0) {
+                roleDisplay += ' - ' + loggedInUser.units.join(', ');
+            }
+            document.getElementById('headerUserRole').textContent = roleDisplay;
+
+            // Show limited access banner for ICD Head
+            if (loggedInUser.role === 'ICD Head') {
+                document.getElementById('limitedAccessBanner').classList.add('visible');
+            }
+
+            // Load the default module
+            loadModule('analysis');
+        }
+
+        function switchModule(module) {
+            currentModule = module;
+
+            // Update tabs
+            document.querySelectorAll('.header-tabs .tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.module === module);
+            });
+
+            loadModule(module);
+        }
+
+        function loadModule(module) {
+            const container = document.getElementById('moduleContainer');
+
+            if (module === 'analysis') {
+                loadAnalysisModule(container);
+            } else if (module === 'restructure') {
+                loadRestructureModule(container);
+            }
+        }
+
+        // ============================================================
+        // ===== ANALYSIS MODULE =====
+        // ============================================================
+        function loadAnalysisModule(container) {
+            container.innerHTML = `
+                <!-- Stats Bar -->
+                <div class="stats-bar" id="analysisStatsBar">
+                    <span class="stat-item">👥 <strong id="displayCount">0</strong> employees shown</span>
+                    <span class="stat-divider">|</span>
+                    <span class="stat-item">📋 <strong id="displayFTA">0</strong> FTA</span>
+                    <span class="stat-item">📋 <strong id="displayVOU">0</strong> VOU</span>
+                    <span class="stat-item">📋 <strong id="displayCNF">0</strong> CNF</span>
+                    <span class="stat-divider">|</span>
+                    <span class="stat-item">🏢 <strong id="displayUnits">0</strong> units</span>
+                    <span class="stat-item">📍 <strong id="displayWorkplaces">0</strong> workplaces</span>
+                    <span class="stat-divider">|</span>
+                    <span class="stat-expertise">🏷️ <strong>Expertise:</strong> <span id="expertiseList">—</span></span>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label><i class="fa fa-building"></i> Unit</label>
+                        <select id="unitFilter" onchange="applyFilters()">
+                            <option value="">All Units</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fa fa-map-marker"></i> Workplace</label>
+                        <select id="workplaceFilter" onchange="applyFilters()">
+                            <option value="">All Workplaces</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fa fa-tag"></i> Type</label>
+                        <div class="type-filters" id="typeFilters">
+                            <button class="type-btn active" data-type="all" onclick="setTypeFilter('all')">All</button>
+                            <button class="type-btn" data-type="FTA" onclick="setTypeFilter('FTA')">FTA <span class="type-count" id="ftaTypeCount"></span></button>
+                            <button class="type-btn" data-type="VOU" onclick="setTypeFilter('VOU')">VOU <span class="type-count" id="vouTypeCount"></span></button>
+                            <button class="type-btn" data-type="CNF" onclick="setTypeFilter('CNF')">CNF <span class="type-count" id="cnfTypeCount"></span></button>
+                        </div>
+                    </div>
+                    <div class="filter-group" style="flex:1; justify-content:flex-end;">
+                        <input type="text" class="search-box" id="searchInput" placeholder="🔍 Search by name..." oninput="applyFilters()">
+                    </div>
+                </div>
+
+                <!-- Common Unit Projects (Admin only) -->
+                <div class="common-unit-projects" id="commonUnitProjects">
+                    <div class="cup-container">
+                        <div class="cup-header">
+                            <div class="cup-title">
+                                <i class="fa fa-folder-open"></i> Common Unit Projects
+                                <span class="cup-unit-name" id="cupUnitName"></span>
+                            </div>
+                            <div class="cup-actions">
+                                <span class="cup-save-status" id="cupStatus"></span>
+                                <button class="cup-save-btn" id="cupSaveBtn" onclick="saveCommonUnitProjects()">
+                                    <i class="fa fa-save"></i> Save
+                                </button>
+                            </div>
+                        </div>
+                        <textarea class="cup-textarea" id="cupTextarea" 
+                                  placeholder="No common projects for this unit..." 
+                                  oninput="onCUPChange()"
+                                  disabled></textarea>
+                    </div>
+                </div>
+
+                <!-- Team Workload -->
+                <div class="team-workload-bar" id="teamWorkloadBar">
+                    <div class="tw-title"><i class="fa fa-tasks"></i> 📊 Team Workload</div>
+                    <div class="tw-container" id="twContainer">
+                        <div class="tw-left" id="twLeft">
+                            <div id="teamWorkloadContent">
+                                <span style="color:#999;">Select a workplace to view workload</span>
+                            </div>
+                        </div>
+                        <div class="tw-right" id="twRight">
+                            <div class="tw-remark-header">
+                                <label><i class="fa fa-pencil-square-o"></i> WP Remark</label>
+                                <button class="save-btn" id="remarkSaveBtn" onclick="saveRemark()">
+                                    <i class="fa fa-save"></i> Save
+                                </button>
+                            </div>
+                            <textarea class="tw-remark-textarea" id="remarkInput" 
+                                      placeholder="Workplace remarks and analysis will appear here..." 
+                                      oninput="onRemarkChange()"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Place Other Workload -->
+                <div class="wpow-bar" id="wpowBar">
+                    <div class="wpow-title"><i class="fa fa-tasks"></i> 📋 Work Place Other Workload</div>
+                    <div class="wpow-row">
+                        <div class="wpow-item">
+                            <label>Daily Ads</label>
+                            <input type="number" id="wpowDailyAds" min="0" step="1" placeholder="0" oninput="onWPOWChange()">
+                        </div>
+                        <div class="wpow-item">
+                            <label>AnniversaryPG</label>
+                            <input type="number" id="wpowAnniversaryPG" min="0" step="1" placeholder="0" oninput="onWPOWChange()">
+                        </div>
+                        <div class="wpow-item">
+                            <label>AdvertorialPG</label>
+                            <input type="number" id="wpowAdvertorialPG" min="0" step="1" placeholder="0" oninput="onWPOWChange()">
+                        </div>
+                        <div class="wpow-item">
+                            <label>Diwali Issue</label>
+                            <input type="number" id="wpowDiwaliIssue" min="0" step="1" placeholder="0" oninput="onWPOWChange()">
+                        </div>
+                        <div class="wpow-item">
+                            <label>CT-Book</label>
+                            <input type="number" id="wpowCtBook" min="0" step="1" placeholder="0" oninput="onWPOWChange()">
+                        </div>
+                        <div class="wpow-other-item">
+                            <label>Other</label>
+                            <textarea id="wpowOther" placeholder="..." oninput="onWPOWChange()"></textarea>
+                        </div>
+                        <div class="wpow-save-area">
+                            <span class="wpow-save-status" id="wpowStatus"></span>
+                            <button class="wpow-save-btn" id="wpowSaveBtn" onclick="saveWPOWData()">
+                                <i class="fa fa-save"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employee Grid -->
+                <div class="employee-grid" id="employeeGrid">
+                    <div class="loading-spinner">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        Loading employee data...
+                    </div>
+                </div>
+            `;
+
+            // Load data
+            loadAnalysisData();
+        }
+
+        // ============================================================
+        // LOAD ANALYSIS DATA
+        // ============================================================
+        async function loadAnalysisData() {
+            try {
+                // Get employees
+                const empResult = await callAPI('getEmployees', {});
+                if (empResult.success) {
+                    allEmployees = empResult.employees || [];
+                    filteredEmployees = [...allEmployees];
+                } else {
+                    showToast('Error loading employees: ' + (empResult.error || 'Unknown error'), 'error');
+                    return;
+                }
+
+                // Get units
+                const unitResult = await callAPI('getUnits', {});
+                if (unitResult.success) {
+                    populateUnitFilter(unitResult.units || []);
+                }
+
+                // Update header stats
+                updateHeaderStats();
+
+                // Apply filters and render
+                applyFilters();
+
+            } catch(error) {
+                console.error('Error loading analysis data:', error);
+                showToast('Error loading data: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // UPDATE HEADER STATS
+        // ============================================================
+        function updateHeaderStats() {
+            if (!loggedInUser || loggedInUser.role !== 'Admin') return;
+
+            const countsContainer = document.getElementById('headerCounts');
+            if (!countsContainer) return;
+
+            let total = allEmployees.length;
+            let fta = 0,
+                vou = 0,
+                cnf = 0,
+                icdHead = 0;
+
+            const expertiseCounts = {
+                'Normal Pagination': 0,
+                'Creative/Feature Page Design': 0,
+                'Event/Creative Advt': 0,
+                'Notice/Display Advt': 0,
+                'Photo': 0,
+                'PDF Final/QC': 0,
+                'Allrounder': 0
+            };
+
+            allEmployees.forEach(emp => {
+                if (emp.Type === 'FTA') fta++;
+                else if (emp.Type === 'VOU') vou++;
+                else if (emp.Type === 'CNF') cnf++;
+                if (emp.Role === 'ICD Head') icdHead++;
+
+                if (emp.Expertise && expertiseCounts.hasOwnProperty(emp.Expertise)) {
+                    expertiseCounts[emp.Expertise]++;
+                }
+            });
+
+            countsContainer.innerHTML = `
+                <span class="count-chip total">
+                    <span class="count-label">Total</span>
+                    <span class="count-value">${total}</span>
+                </span>
+                <span class="count-divider">|</span>
+                <span class="count-chip fta">
+                    <span class="count-label">FTA</span>
+                    <span class="count-value">${fta}</span>
+                </span>
+                <span class="count-divider">|</span>
+                <span class="count-chip vou">
+                    <span class="count-label">VOU</span>
+                    <span class="count-value">${vou}</span>
+                </span>
+                <span class="count-divider">|</span>
+                <span class="count-chip cnf">
+                    <span class="count-label">CNF</span>
+                    <span class="count-value">${cnf}</span>
+                </span>
+                <span class="count-divider">|</span>
+                <span class="count-chip icd-head">
+                    <span class="count-label">ICD Heads</span>
+                    <span class="count-value">${icdHead}</span>
+                </span>
+            `;
+
+            // Skill Strength
+            const skillContainer = document.getElementById('headerRow2');
+            if (!skillContainer) return;
+
+            let skillHtml = '';
+            const skillOrder = ['Allrounder', 'Creative/Feature Page Design', 'Event/Creative Advt', 'Notice/Display Advt',
+                'Photo', 'Normal Pagination', 'PDF Final/QC'
+            ];
+            skillOrder.forEach(skill => {
+                const count = expertiseCounts[skill] || 0;
+                if (count > 0) {
+                    skillHtml +=
+                        `<span class="skill-item"><span class="skill-name">${skill}</span><span class="skill-count">${count}</span></span>`;
+                }
+            });
+
+            if (skillHtml) {
+                skillContainer.innerHTML = `
+                    <div class="header-stats">
+                        <span class="stat-label">Skill Strength:</span>
+                        ${skillHtml}
+                    </div>
+                `;
+            } else {
+                skillContainer.innerHTML = '';
+            }
+        }
+
+        // ============================================================
+        // POPULATE UNIT FILTER
+        // ============================================================
+        function populateUnitFilter(units) {
+            const select = document.getElementById('unitFilter');
+            const user = loggedInUser;
+
+            select.innerHTML = '<option value="">All Units</option>';
+
+            let availableUnits = units;
+            if (user && user.role === 'ICD Head' && user.units && user.units.length > 0) {
+                availableUnits = units.filter(u => user.units.includes(u.name));
+            }
+
+            availableUnits.sort((a, b) => a.name.localeCompare(b.name));
+            availableUnits.forEach(unit => {
+                const option = document.createElement('option');
+                option.value = unit.name;
+                option.textContent = unit.name + ' (' + unit.count + ')';
+                select.appendChild(option);
+            });
+        }
+
+        // ============================================================
+        // FILTERS
+        // ============================================================
+        function applyFilters() {
+            const unit = document.getElementById('unitFilter').value;
+            const workplace = document.getElementById('workplaceFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            currentUnit = unit;
+            currentWorkplace = workplace;
+
+            let allowedUnits = [];
+            if (loggedInUser && loggedInUser.role === 'ICD Head' && loggedInUser.units) {
+                allowedUnits = loggedInUser.units;
+            }
+
+            filteredEmployees = allEmployees.filter(emp => {
+                if (!emp.Name) return false;
+
+                if (loggedInUser && loggedInUser.role === 'ICD Head') {
+                    if (unit) {
+                        if (emp.Unit !== unit) return false;
+                    } else {
+                        if (!allowedUnits.includes(emp.Unit)) return false;
+                    }
+                } else {
+                    if (unit && emp.Unit !== unit) return false;
+                }
+
+                if (workplace && emp.WorkPlace !== workplace) return false;
+                if (currentTypeFilter !== 'all' && emp.Type !== currentTypeFilter) return false;
+                if (searchTerm && !emp.Name.toLowerCase().includes(searchTerm)) return false;
+                return true;
+            });
+
+            renderEmployees(filteredEmployees);
+            updateDisplayStats();
+            updateWorkplaceDropdown(unit);
+            updateCommonUnitProjects(unit);
+            updateTeamWorkload(workplace);
+            updateWPOWData(workplace);
+            updateExpertiseStats(filteredEmployees);
+        }
+
+        function setTypeFilter(type) {
+            currentTypeFilter = type;
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.type === type);
+            });
+            applyFilters();
+        }
+
+        // ============================================================
+        // RENDER EMPLOYEES
+        // ============================================================
+        function renderEmployees(employees) {
+            const grid = document.getElementById('employeeGrid');
+            const canEdit = loggedInUser && (loggedInUser.role === 'Admin' || loggedInUser.role === 'ICD Head');
+
+            if (!employees || employees.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fa fa-search"></i>
+                        No employees found matching the current filters
+                        <br><small style="color:#aaa;">Try adjusting your filters or search terms</small>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            employees.forEach(emp => {
+                html += buildEmployeeCard(emp, canEdit);
+            });
+            grid.innerHTML = html;
+        }
+
+        // ============================================================
+        // BUILD EMPLOYEE CARD
+        // ============================================================
+        function buildEmployeeCard(emp, canEdit) {
+            const roleClass = getRoleBadgeClass(emp.Role);
+            const typeClass = getTypeBadgeClass(emp.Type);
+            const cleanedEmail = (emp.Email || '').replace(/[^a-zA-Z0-9@._-]/g, '_');
+
+            // Expertise dropdown
+            let optionsHtml = '';
+            const currentExpertise = emp.Expertise || '';
+            EXPERTISE_OPTIONS.forEach(option => {
+                const selected = (currentExpertise === option.value) ? 'selected' : '';
+                optionsHtml +=
+                    `<option value="${escapeHtml(option.value)}" ${selected}>${escapeHtml(option.value || 'Select...')}</option>`;
+            });
+
+            const currentDesc = getExpertiseDescription(currentExpertise);
+            const descHtml = currentDesc ?
+                '<i class="fa fa-info-circle"></i> ' + currentDesc :
+                '<span class="empty">Select an expertise to see description</span>';
+
+            // Special projects
+            const projectText = getCleanSpecialProjects(emp);
+
+            // HOD status
+            let hodStatusHtml = '<span class="hod-status na">Not Assessed</span>';
+            let hodLevel = 'na';
+            if (emp.HODEvaluation && emp.HODEvaluation.Overall_Assessed_Level) {
+                hodLevel = emp.HODEvaluation.Overall_Assessed_Level.toLowerCase();
+                let hodText = emp.HODEvaluation.Overall_Assessed_Level;
+                if (hodLevel === 'de') hodText = 'DE - Distinguished Expert';
+                else if (hodLevel === 'me') hodText = 'ME - Meets Expectations';
+                else if (hodLevel === 'ni') hodText = 'NI - Needs Improvement';
+                hodStatusHtml = '<span class="hod-status ' + hodLevel + '">⭐ ' + hodText + '</span>';
+            }
+
+            return `
+                <div class="employee-card">
+                    <div class="card-header">
+                        <span class="name">${escapeHtml(emp.Name)}</span>
+                        <div class="badge-group">
+                            ${emp.Type ? `<span class="type-badge ${typeClass}">${escapeHtml(emp.Type)}</span>` : ''}
+                            <span class="role-badge ${roleClass}">${escapeHtml(emp.Role || 'Employee')}</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-row-inline">
+                            <span class="label">Designation</span>
+                            <span class="value">${escapeHtml(emp.Designation || '—')}</span>
+                            ${emp.Publication ? `<span class="divider">|</span><span class="label">Publications</span><span class="value">${escapeHtml(emp.Publication)}</span>` : ''}
+                        </div>
+
+                        <div class="expertise-editable">
+                            <div class="exp-header">
+                                <label><i class="fa fa-tag"></i> Expertise</label>
+                                <span class="exp-save-status" id="exp_status_${cleanedEmail}"></span>
+                            </div>
+                            <select class="exp-select" id="exp_select_${cleanedEmail}" 
+                                    ${canEdit ? '' : 'disabled'}
+                                    onchange="saveExpertise('${escapeHtml(emp.Email)}', '${escapeHtml(emp.Name)}')">
+                                ${optionsHtml}
+                            </select>
+                            <div class="expertise-description" id="exp_desc_${cleanedEmail}">
+                                ${descHtml}
+                            </div>
+                        </div>
+
+                        ${buildWorkloadHtml(emp)}
+
+                        <div class="special-projects-editable">
+                            <div class="sp-header">
+                                <label><i class="fa fa-pencil-square-o"></i> Special Projects</label>
+                                <button class="sp-save-btn" 
+                                        id="sp_save_btn_${cleanedEmail}" 
+                                        onclick="saveSpecialProjects('${escapeHtml(emp.Email)}', '${escapeHtml(emp.Name)}')"
+                                        style="${!canEdit ? 'display:none;' : ''}">
+                                    <i class="fa fa-save"></i> Save
+                                </button>
+                            </div>
+                            <textarea class="sp-textarea" 
+                                      id="sp_textarea_${cleanedEmail}" 
+                                      placeholder="No special projects listed..." 
+                                      oninput="onSpecialProjectChange('${escapeHtml(emp.Email)}')"
+                                      ${canEdit ? '' : 'disabled'}>${escapeHtml(projectText)}</textarea>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        ${hodStatusHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function buildWorkloadHtml(emp) {
+            if (!emp.DailyWorkload || typeof emp.DailyWorkload !== 'object') return '';
+
+            const items = [];
+            const wl = emp.DailyWorkload;
+            const labels = {
+                main_full_page_design: 'Main Full Page Design',
+                main_page_alter_ad_schedule: 'Main Page Alter (Ad Schedule)',
+                main_page_alter_news_update: 'Main Page Alter (News Update)',
+                main_infographic: 'Main Infographic',
+                hello_full_page_design: 'Hello Full Page Design',
+                hello_page_alter_ad_schedule: 'Hello Page Alter (Ad Schedule)',
+                hello_page_alter_news_update: 'Hello Page Alter (News Update)',
+                hello_infographic: 'Hello Infographic',
+                display_ad_design: 'Display Ad Design',
+                event_creative: 'Event Creative',
+                supplement_design: 'Supplement Design',
+                ai_image: 'AI Image',
+                photo_correction: 'Photo Correction',
+                pdf_quality_check: 'PDF Quality Check',
+                epaper_page_upload: 'Epaper Page Upload',
+                news_article_typing: 'News/Article Typing (words)'
+            };
+
+            for (let key in wl) {
+                if (wl[key] && wl[key] > 0 && labels[key]) {
+                    items.push({ label: labels[key], num: wl[key] });
+                }
+            }
+
+            if (items.length === 0) return '';
+
+            let html =
+            '<div class="workload-section"><div class="wl-title"><i class="fa fa-calendar"></i> 📋 Daily Workload</div><div class="workload-items">';
+            items.forEach(item => {
+                html += `<span class="workload-item"><span class="num">${item.num}</span> ${item.label}</span>`;
+            });
+            html += '</div></div>';
+            return html;
+        }
+
+        function getCleanSpecialProjects(emp) {
+            let projectText = '';
+            if (emp.SpecialProjects) {
+                if (typeof emp.SpecialProjects === 'object') {
+                    projectText = emp.SpecialProjects.special_projects || emp.SpecialProjects.job_description || '';
+                } else if (typeof emp.SpecialProjects === 'string') {
+                    projectText = emp.SpecialProjects;
+                }
+            }
+            let cleanText = projectText.trim();
+            cleanText = cleanText.replace(/^\s*\*\s*/gm, '');
+            cleanText = cleanText.replace(/\n/g, ' ');
+            cleanText = cleanText.replace(/\t/g, ' ');
+            cleanText = cleanText.replace(/ +/g, ' ');
+            return cleanText.trim();
+        }
+
+        // ============================================================
+        // SAVE EXPERTISE
+        // ============================================================
+        async function saveExpertise(empEmail, empName) {
+            const cleanedEmail = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
+            const select = document.getElementById('exp_select_' + cleanedEmail);
+            const statusEl = document.getElementById('exp_status_' + cleanedEmail);
+
+            if (!select) return;
+
+            const selectedValue = select.value;
+
+            statusEl.textContent = '⏳ Saving...';
+            statusEl.className = 'exp-save-status show saving';
+
+            try {
+                const result = await callAPI('saveExpertise', {
+                    emp_email: empEmail,
+                    expertise: selectedValue
+                });
+
+                if (result.success) {
+                    const emp = allEmployees.find(e => e.Email === empEmail);
+                    if (emp) emp.Expertise = selectedValue;
+                    statusEl.textContent = '✓ Saved';
+                    statusEl.className = 'exp-save-status show saved';
+                    updateExpertiseDescription(cleanedEmail, selectedValue);
+                    showToast('Expertise updated for ' + empName, 'success');
+                } else {
+                    statusEl.textContent = '✗ Error';
+                    statusEl.className = 'exp-save-status show error';
+                    showToast('Error saving: ' + (result.error || 'Unknown error'), 'error');
+                }
+
+                setTimeout(() => {
+                    statusEl.className = 'exp-save-status';
+                }, 2000);
+            } catch(error) {
+                statusEl.textContent = '✗ Error';
+                statusEl.className = 'exp-save-status show error';
+                showToast('Error saving: ' + error.message, 'error');
+            }
+        }
+
+        function updateExpertiseDescription(cleanedEmail, value) {
+            const descContainer = document.getElementById('exp_desc_' + cleanedEmail);
+            if (descContainer) {
+                const desc = getExpertiseDescription(value);
+                if (desc) {
+                    descContainer.innerHTML = '<i class="fa fa-info-circle"></i> ' + desc;
+                } else {
+                    descContainer.innerHTML = '<span class="empty">Select an expertise to see description</span>';
+                }
+            }
+        }
+
+        // ============================================================
+        // SAVE SPECIAL PROJECTS
+        // ============================================================
+        async function saveSpecialProjects(empEmail, empName) {
+            if (!empEmail) {
+                showToast('Error: Employee email missing', 'error');
+                return;
+            }
+
+            const cleanedEmail = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
+            const textarea = document.getElementById('sp_textarea_' + cleanedEmail);
+            const saveBtn = document.getElementById('sp_save_btn_' + cleanedEmail);
+
+            if (!textarea || !saveBtn) {
+                showToast('Error: UI elements not found', 'error');
+                return;
+            }
+
+            const newText = textarea.value;
+
+            saveBtn.disabled = true;
+            saveBtn.textContent = '⏳ Saving...';
+            saveBtn.classList.remove('saved');
+
+            try {
+                const result = await callAPI('saveSpecialProjects', {
+                    emp_email: empEmail,
+                    special_projects: newText
+                });
+
+                if (result.success) {
+                    const emp = allEmployees.find(e => e.Email === empEmail);
+                    if (emp) {
+                        emp.SpecialProjects = { special_projects: newText };
+                    }
+                    saveBtn.textContent = '✓ Saved';
+                    saveBtn.classList.add('saved');
+                    showToast('Special projects saved for ' + empName, 'success');
+                } else {
+                    saveBtn.textContent = '💾 Save';
+                    saveBtn.classList.remove('saved');
+                    showToast('Error saving: ' + (result.error || 'Unknown error'), 'error');
+                }
+                saveBtn.disabled = false;
+            } catch(error) {
+                saveBtn.textContent = '💾 Save';
+                saveBtn.classList.remove('saved');
+                saveBtn.disabled = false;
+                showToast('Error saving: ' + error.message, 'error');
+            }
+        }
+
+        function onSpecialProjectChange(empEmail) {
+            if (!empEmail) return;
+            const cleanedEmail = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
+            const saveBtn = document.getElementById('sp_save_btn_' + cleanedEmail);
+            if (saveBtn) {
+                saveBtn.textContent = '💾 Save';
+                saveBtn.classList.remove('saved');
+                saveBtn.disabled = false;
+            }
+        }
+
+        // ============================================================
+        // UPDATE FUNCTIONS
+        // ============================================================
+        function updateDisplayStats() {
+            let fta = 0,
+                vou = 0,
+                cnf = 0;
+            const units = new Set();
+            const workplaces = new Set();
+
+            filteredEmployees.forEach(emp => {
+                if (emp.Type === 'FTA') fta++;
+                else if (emp.Type === 'VOU') vou++;
+                else if (emp.Type === 'CNF') cnf++;
+                if (emp.Unit) units.add(emp.Unit);
+                if (emp.WorkPlace) workplaces.add(emp.WorkPlace);
+            });
+
+            document.getElementById('displayCount').textContent = filteredEmployees.length;
+            document.getElementById('displayFTA').textContent = fta;
+            document.getElementById('displayVOU').textContent = vou;
+            document.getElementById('displayCNF').textContent = cnf;
+            document.getElementById('displayUnits').textContent = units.size;
+            document.getElementById('displayWorkplaces').textContent = workplaces.size;
+        }
+
+        function updateExpertiseStats(employees) {
+            const container = document.getElementById('expertiseList');
+            if (!employees || employees.length === 0) {
+                container.textContent = '—';
+                return;
+            }
+
+            const expertiseCounts = {};
+            employees.forEach(emp => {
+                if (emp.Expertise) {
+                    expertiseCounts[emp.Expertise] = (expertiseCounts[emp.Expertise] || 0) + 1;
+                }
+            });
+
+            const skills = Object.keys(expertiseCounts);
+            if (skills.length === 0) {
+                container.textContent = '—';
+                return;
+            }
+
+            let html = '';
+            skills.forEach((skill, index) => {
+                if (index > 0) html += ', ';
+                html += `<span class="expertise-tag-stat">${escapeHtml(skill)} - ${expertiseCounts[skill]}</span>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function updateWorkplaceDropdown(unit) {
+            const select = document.getElementById('workplaceFilter');
+            const currentValue = select.value;
+
+            const workplaces = {};
+            filteredEmployees.forEach(emp => {
+                if (emp.WorkPlace && emp.WorkPlace.trim()) {
+                    if (!workplaces[emp.WorkPlace]) workplaces[emp.WorkPlace] = 0;
+                    workplaces[emp.WorkPlace]++;
+                }
+            });
+
+            const workplaceList = Object.keys(workplaces).map(key => ({ name: key, count: workplaces[key] }));
+            workplaceList.sort((a, b) => a.name.localeCompare(b.name));
+
+            select.innerHTML = '<option value="">All Workplaces</option>';
+            workplaceList.forEach(wp => {
+                const option = document.createElement('option');
+                option.value = wp.name;
+                option.textContent = wp.name + ' (' + wp.count + ')';
+                select.appendChild(option);
+            });
+
+            if (currentValue) {
+                let found = false;
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value === currentValue) {
+                        select.value = currentValue;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) select.value = '';
+            }
+        }
+
+        // ============================================================
+        // COMMON UNIT PROJECTS
+        // ============================================================
+        function updateCommonUnitProjects(unit) {
+            const container = document.getElementById('commonUnitProjects');
+            const textarea = document.getElementById('cupTextarea');
+            const unitName = document.getElementById('cupUnitName');
+            const saveBtn = document.getElementById('cupSaveBtn');
+            const statusEl = document.getElementById('cupStatus');
+
+            cupChanged = false;
+            saveBtn.style.display = 'none';
+            saveBtn.classList.remove('saved');
+            saveBtn.disabled = false;
+            statusEl.className = 'cup-save-status';
+
+            if (!loggedInUser || loggedInUser.role !== 'Admin' || !unit || unit === '') {
+                container.classList.remove('visible');
+                return;
+            }
+
+            container.classList.add('visible');
+            unitName.textContent = unit;
+            textarea.disabled = false;
+            textarea.value = 'Loading...';
+            statusEl.className = 'cup-save-status show saving';
+            statusEl.textContent = '⏳ Loading...';
+
+            callAPI('getCommonUnitProjects', { unit: unit })
+                .then(result => {
+                    if (result.success) {
+                        currentCommonUnit = unit;
+                        currentCommonProjects = result.commonProjects || '';
+                        textarea.value = currentCommonProjects;
+
+                        if (result.found) {
+                            statusEl.className = 'cup-save-status show saved';
+                            statusEl.textContent = '✓ Loaded';
+                        } else {
+                            statusEl.className = 'cup-save-status show';
+                            statusEl.textContent = 'ℹ️ No projects found';
+                        }
+
+                        cupChanged = false;
+                        saveBtn.style.display = 'none';
+
+                        setTimeout(() => {
+                            if (!cupChanged) {
+                                statusEl.className = 'cup-save-status';
+                            }
+                        }, 2000);
+                    } else {
+                        textarea.value = '';
+                        statusEl.className = 'cup-save-status show error';
+                        statusEl.textContent = '✗ Error: ' + (result.error || 'Unknown error');
+                    }
+                })
+                .catch(error => {
+                    textarea.value = '';
+                    statusEl.className = 'cup-save-status show error';
+                    statusEl.textContent = '✗ Error loading data';
+                });
+        }
+
+        function onCUPChange() {
+            const textarea = document.getElementById('cupTextarea');
+            const saveBtn = document.getElementById('cupSaveBtn');
+            const statusEl = document.getElementById('cupStatus');
+
+            if (!loggedInUser || loggedInUser.role !== 'Admin') {
+                saveBtn.style.display = 'none';
+                return;
+            }
+
+            const newValue = textarea.value;
+
+            if (newValue !== currentCommonProjects) {
+                cupChanged = true;
+                saveBtn.style.display = 'inline-block';
+                statusEl.className = 'cup-save-status show saving';
+                statusEl.textContent = '⏳ Unsaved changes';
+            } else {
+                cupChanged = false;
+                saveBtn.style.display = 'none';
+                statusEl.className = 'cup-save-status';
+            }
+        }
+
+        async function saveCommonUnitProjects() {
+            const textarea = document.getElementById('cupTextarea');
+            const saveBtn = document.getElementById('cupSaveBtn');
+            const statusEl = document.getElementById('cupStatus');
+            const unit = currentCommonUnit;
+
+            if (!unit || unit === '') {
+                showToast('No unit selected', 'error');
+                return;
+            }
+
+            if (cupSaving) return;
+            if (!cupChanged) return;
+
+            cupSaving = true;
+            saveBtn.disabled = true;
+            statusEl.className = 'cup-save-status show saving';
+            statusEl.textContent = '⏳ Saving...';
+
+            try {
+                const result = await callAPI('saveCommonUnitProjects', {
+                    unit: unit,
+                    commonProjects: textarea.value
+                });
+
+                if (result.success) {
+                    currentCommonProjects = textarea.value;
+                    cupChanged = false;
+                    saveBtn.style.display = 'none';
+                    statusEl.className = 'cup-save-status show saved';
+                    statusEl.textContent = '✓ Saved';
+                    showToast('Common Unit Projects saved successfully!', 'success');
+                } else {
+                    statusEl.className = 'cup-save-status show error';
+                    statusEl.textContent = '✗ Error: ' + (result.error || 'Unknown error');
+                    showToast('Error saving: ' + (result.error || 'Unknown error'), 'error');
+                }
+                saveBtn.disabled = false;
+                cupSaving = false;
+                setTimeout(() => {
+                    if (!cupChanged) {
+                        statusEl.className = 'cup-save-status';
+                    }
+                }, 3000);
+            } catch(error) {
+                statusEl.className = 'cup-save-status show error';
+                statusEl.textContent = '✗ Error';
+                saveBtn.disabled = false;
+                cupSaving = false;
+                showToast('Error saving: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // TEAM WORKLOAD
+        // ============================================================
+        function updateTeamWorkload(workplace) {
+            const bar = document.getElementById('teamWorkloadBar');
+            const content = document.getElementById('teamWorkloadContent');
+            const container = document.getElementById('twContainer');
+            const remarkInput = document.getElementById('remarkInput');
+            const saveBtn = document.getElementById('remarkSaveBtn');
+            const remarkSection = document.getElementById('twRight');
+
+            if (!workplace || workplace === '') {
+                bar.classList.remove('visible');
+                return;
+            }
+
+            callAPI('getWPOWData', { workplace: workplace })
+                .then(result => {
+                    if (result.success && result.data && result.data.teamWorkload) {
+                        const teamWorkload = result.data.teamWorkload;
+
+                        if (typeof teamWorkload !== 'object' || Object.keys(teamWorkload).length === 0) {
+                            bar.classList.remove('visible');
+                            return;
+                        }
+
+                        const editions = Object.keys(teamWorkload);
+                        let html = '<div class="tw-editions">';
+                        let grandTotal = 0;
+
+                        editions.forEach(edition => {
+                            const data = teamWorkload[edition];
+                            const main = data.main_pages || 0;
+                            const hello = data.hello_pages || 0;
+                            const editionTotal = main + hello;
+                            grandTotal += editionTotal;
+
+                            const helloLabel = (edition.toLowerCase().includes('samachar')) ? 'Apna' :
+                                (edition.toLowerCase().includes('times')) ? 'FIRST' : 'Hello';
+
+                            html += `<div class="tw-edition">
+                                <strong>${escapeHtml(edition)}</strong>: 
+                                Main(${main}) + ${helloLabel}(${hello}) = <strong>${editionTotal}</strong> pages
+                            </div>`;
+                        });
+
+                        html += '</div>';
+                        html +=
+                            `<div class="tw-total">📄 Total: <strong>${grandTotal}</strong> pages across ${editions.length} editions</div>`;
+
+                        const workplaceEmployees = allEmployees.filter(emp => emp.WorkPlace === workplace);
+                        html += `<div class="tw-employees">👥 ${workplaceEmployees.length} employees in this workplace</div>`;
+
+                        content.innerHTML = html;
+
+                        const isAdmin = loggedInUser && loggedInUser.role === 'Admin';
+
+                        if (isAdmin) {
+                            container.classList.remove('full-width');
+                            remarkSection.style.display = 'flex';
+                            loadRemark(workplace);
+                        } else {
+                            container.classList.add('full-width');
+                            remarkSection.style.display = 'none';
+                        }
+
+                        bar.classList.add('visible');
+                    } else {
+                        bar.classList.remove('visible');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading team workload:', error);
+                    bar.classList.remove('visible');
+                });
+        }
+
+        function loadRemark(workplace) {
+            const remarkInput = document.getElementById('remarkInput');
+            const saveBtn = document.getElementById('remarkSaveBtn');
+
+            callAPI('getRemark', { workplace: workplace })
+                .then(result => {
+                    if (result.success) {
+                        const remark = result.remark || '';
+                        remarkInput.value = remark;
+                        currentRemark = remark;
+                        remarkChanged = false;
+                        saveBtn.textContent = '✓ Saved';
+                        saveBtn.classList.add('saved');
+                        saveBtn.disabled = true;
+                    } else {
+                        remarkInput.value = '';
+                        currentRemark = '';
+                        remarkChanged = false;
+                        saveBtn.textContent = '✓ Saved';
+                        saveBtn.classList.add('saved');
+                        saveBtn.disabled = true;
+                    }
+                })
+                .catch(() => {
+                    remarkInput.value = '';
+                    currentRemark = '';
+                    remarkChanged = false;
+                    saveBtn.textContent = '✓ Saved';
+                    saveBtn.classList.add('saved');
+                    saveBtn.disabled = true;
+                });
+        }
+
+        function onRemarkChange() {
+            const remarkInput = document.getElementById('remarkInput');
+            const saveBtn = document.getElementById('remarkSaveBtn');
+
+            if (!loggedInUser || loggedInUser.role !== 'Admin') {
+                saveBtn.disabled = true;
+                return;
+            }
+
+            const newValue = remarkInput.value;
+
+            if (newValue !== currentRemark) {
+                remarkChanged = true;
+                saveBtn.textContent = '💾 Save';
+                saveBtn.classList.remove('saved');
+                saveBtn.disabled = false;
+            } else {
+                remarkChanged = false;
+                saveBtn.textContent = '✓ Saved';
+                saveBtn.classList.add('saved');
+                saveBtn.disabled = true;
+            }
+        }
+
+        async function saveRemark() {
+            const remarkInput = document.getElementById('remarkInput');
+            const saveBtn = document.getElementById('remarkSaveBtn');
+            const fullText = remarkInput.value;
+            const workplace = currentWorkplace;
+
+            if (!workplace || workplace === '') {
+                return;
+            }
+
+            if (remarkSaving) return;
+            remarkSaving = true;
+            saveBtn.disabled = true;
+            saveBtn.textContent = '⏳ Saving...';
+
+            try {
+                const result = await callAPI('saveRemark', {
+                    workplace: workplace,
+                    remark: fullText
+                });
+
+                if (result.success) {
+                    currentRemark = fullText;
+                    remarkChanged = false;
+                    saveBtn.textContent = '✓ Saved';
+                    saveBtn.classList.add('saved');
+                    saveBtn.disabled = true;
+                    showToast('Remark saved successfully!', 'success');
+                } else {
+                    saveBtn.textContent = '💾 Save';
+                    saveBtn.classList.remove('saved');
+                    saveBtn.disabled = false;
+                    showToast('Error saving remark: ' + (result.error || 'Unknown error'), 'error');
+                }
+                remarkSaving = false;
+            } catch(error) {
+                saveBtn.textContent = '💾 Save';
+                saveBtn.classList.remove('saved');
+                saveBtn.disabled = false;
+                remarkSaving = false;
+                showToast('Error saving remark: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // WORK PLACE OTHER WORKLOAD
+        // ============================================================
+        function updateWPOWData(workplace) {
+            const bar = document.getElementById('wpowBar');
+            const saveBtn = document.getElementById('wpowSaveBtn');
+            const statusEl = document.getElementById('wpowStatus');
+
+            wpowChanged = false;
+            saveBtn.style.display = 'none';
+            saveBtn.classList.remove('saved');
+            saveBtn.disabled = false;
+
+            if (!workplace || workplace === '') {
+                bar.classList.remove('visible');
+                return;
+            }
+
+            bar.classList.add('visible');
+
+            const canEdit = loggedInUser && (loggedInUser.role === 'Admin' || loggedInUser.role === 'ICD Head');
+
+            callAPI('getWPOWData', { workplace: workplace })
+                .then(result => {
+                    if (result.success) {
+                        const data = result.data || {};
+                        currentWPOWData = data;
+
+                        document.getElementById('wpowDailyAds').value = data.dailyAds || 0;
+                        document.getElementById('wpowAnniversaryPG').value = data.anniversaryPG || 0;
+                        document.getElementById('wpowAdvertorialPG').value = data.advertorialPG || 0;
+                        document.getElementById('wpowDiwaliIssue').value = data.diwaliIssue || 0;
+                        document.getElementById('wpowCtBook').value = data.ctBook || 0;
+                        document.getElementById('wpowOther').value = data.other || '';
+
+                        const inputs = document.querySelectorAll('.wpow-item input, .wpow-other-item textarea');
+                        inputs.forEach(input => {
+                            input.disabled = !canEdit;
+                            if (!canEdit) {
+                                input.title = 'Only Admin and ICD Head can edit Work Place Other Workload';
+                            }
+                        });
+
+                        if (!canEdit) {
+                            saveBtn.style.display = 'none';
+                            statusEl.className = 'wpow-save-status';
+                        } else {
+                            statusEl.className = 'wpow-save-status show saved';
+                            statusEl.textContent = '✓ Loaded';
+                            setTimeout(() => {
+                                statusEl.className = 'wpow-save-status';
+                            }, 1500);
+                        }
+
+                        wpowChanged = false;
+                        saveBtn.style.display = 'none';
+                    } else {
+                        document.getElementById('wpowDailyAds').value = 0;
+                        document.getElementById('wpowAnniversaryPG').value = 0;
+                        document.getElementById('wpowAdvertorialPG').value = 0;
+                        document.getElementById('wpowDiwaliIssue').value = 0;
+                        document.getElementById('wpowCtBook').value = 0;
+                        document.getElementById('wpowOther').value = '';
+
+                        const inputs = document.querySelectorAll('.wpow-item input, .wpow-other-item textarea');
+                        inputs.forEach(input => {
+                            input.disabled = !canEdit;
+                        });
+                        saveBtn.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading WPOW data:', error);
+                    document.getElementById('wpowDailyAds').value = 0;
+                    document.getElementById('wpowAnniversaryPG').value = 0;
+                    document.getElementById('wpowAdvertorialPG').value = 0;
+                    document.getElementById('wpowDiwaliIssue').value = 0;
+                    document.getElementById('wpowCtBook').value = 0;
+                    document.getElementById('wpowOther').value = '';
+
+                    const inputs = document.querySelectorAll('.wpow-item input, .wpow-other-item textarea');
+                    inputs.forEach(input => {
+                        input.disabled = !canEdit;
+                    });
+                    saveBtn.style.display = 'none';
+                });
+        }
+
+        function onWPOWChange() {
+            const saveBtn = document.getElementById('wpowSaveBtn');
+            const statusEl = document.getElementById('wpowStatus');
+
+            if (!loggedInUser || (loggedInUser.role !== 'Admin' && loggedInUser.role !== 'ICD Head')) {
+                saveBtn.style.display = 'none';
+                return;
+            }
+
+            const dailyAds = parseInt(document.getElementById('wpowDailyAds').value) || 0;
+            const anniversaryPG = parseInt(document.getElementById('wpowAnniversaryPG').value) || 0;
+            const advertorialPG = parseInt(document.getElementById('wpowAdvertorialPG').value) || 0;
+            const diwaliIssue = parseInt(document.getElementById('wpowDiwaliIssue').value) || 0;
+            const ctBook = parseInt(document.getElementById('wpowCtBook').value) || 0;
+            const other = document.getElementById('wpowOther').value || '';
+
+            const changed = (dailyAds !== (currentWPOWData.dailyAds || 0)) ||
+                (anniversaryPG !== (currentWPOWData.anniversaryPG || 0)) ||
+                (advertorialPG !== (currentWPOWData.advertorialPG || 0)) ||
+                (diwaliIssue !== (currentWPOWData.diwaliIssue || 0)) ||
+                (ctBook !== (currentWPOWData.ctBook || 0)) ||
+                (other !== (currentWPOWData.other || ''));
+
+            if (changed) {
+                wpowChanged = true;
+                saveBtn.style.display = 'inline-block';
+                statusEl.className = 'wpow-save-status show saving';
+                statusEl.textContent = '⏳ Unsaved changes';
+            } else {
+                wpowChanged = false;
+                saveBtn.style.display = 'none';
+                statusEl.className = 'wpow-save-status';
+            }
+        }
+
+        async function saveWPOWData() {
+            const saveBtn = document.getElementById('wpowSaveBtn');
+            const statusEl = document.getElementById('wpowStatus');
+            const workplace = currentWorkplace;
+
+            if (!workplace || workplace === '') {
+                showToast('No workplace selected', 'error');
+                return;
+            }
+
+            if (wpowSaving) return;
+            if (!wpowChanged) return;
+
+            const dailyAds = parseInt(document.getElementById('wpowDailyAds').value) || 0;
+            const anniversaryPG = parseInt(document.getElementById('wpowAnniversaryPG').value) || 0;
+            const advertorialPG = parseInt(document.getElementById('wpowAdvertorialPG').value) || 0;
+            const diwaliIssue = parseInt(document.getElementById('wpowDiwaliIssue').value) || 0;
+            const ctBook = parseInt(document.getElementById('wpowCtBook').value) || 0;
+            const other = document.getElementById('wpowOther').value || '';
+
+            wpowSaving = true;
+            saveBtn.disabled = true;
+            statusEl.className = 'wpow-save-status show saving';
+            statusEl.textContent = '⏳ Saving...';
+
+            try {
+                const result = await callAPI('saveWPOWData', {
+                    workplace: workplace,
+                    dailyAds: dailyAds,
+                    anniversaryPG: anniversaryPG,
+                    advertorialPG: advertorialPG,
+                    diwaliIssue: diwaliIssue,
+                    ctBook: ctBook,
+                    other: other
+                });
+
+                if (result.success) {
+                    currentWPOWData = {
+                        dailyAds: dailyAds,
+                        anniversaryPG: anniversaryPG,
+                        advertorialPG: advertorialPG,
+                        diwaliIssue: diwaliIssue,
+                        ctBook: ctBook,
+                        other: other
+                    };
+                    wpowChanged = false;
+                    saveBtn.style.display = 'none';
+                    statusEl.className = 'wpow-save-status show saved';
+                    statusEl.textContent = '✓ Saved';
+                    showToast('Work Place Other Workload saved successfully!', 'success');
+                } else {
+                    statusEl.className = 'wpow-save-status show error';
+                    statusEl.textContent = '✗ Error: ' + (result.error || 'Unknown error');
+                    showToast('Error saving workload', 'error');
+                }
+                saveBtn.disabled = false;
+                wpowSaving = false;
+                setTimeout(() => {
+                    if (!wpowChanged) {
+                        statusEl.className = 'wpow-save-status';
+                    }
+                }, 3000);
+            } catch(error) {
+                statusEl.className = 'wpow-save-status show error';
+                statusEl.textContent = '✗ Error';
+                saveBtn.disabled = false;
+                wpowSaving = false;
+                showToast('Error saving: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // ===== RESTRUCTURE MODULE =====
+        // ============================================================
+        function loadRestructureModule(container) {
+            const user = loggedInUser;
+            const isAdmin = user && user.role === 'Admin';
+
+            let tabs = [];
+            if (isAdmin) {
+                tabs = [
+                    { id: 'workload', label: '📊 Workload' },
+                    { id: 'skills', label: '📋 Skills' },
+                    { id: 'model-a', label: '📈 Model-A' },
+                    { id: 'model-b', label: '📈 Model-B' },
+                    { id: 'model-c', label: '📈 Model-C' },
+                    { id: 'publications', label: '📰 Publications' },
+                    { id: 'list-a', label: '📋 List-Model-A' },
+                    { id: 'list-b', label: '📋 List-Model-B' },
+                    { id: 'list-c', label: '📋 List-Model-C' }
+                ];
+            } else if (user && user.role === 'ICD Head' && user.units) {
+                user.units.forEach(unit => {
+                    tabs.push({ id: 'pub_' + unit, label: '📰 ' + unit });
+                });
+            }
+
+            let tabsHtml = tabs.map(tab =>
+                `<button class="tab-btn ${tab.id === currentRestructureTab ? 'active' : ''}" 
+                         data-tab="${tab.id}" 
+                         onclick="switchRestructureTab('${tab.id}')">
+                    ${tab.label}
+                </button>`
+            ).join('');
+
+            container.innerHTML = `
+                <div class="tabs-section" style="background:white;border-radius:10px;padding:6px 10px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:4px;border-bottom:3px solid #e8ecf1;">
+                    ${tabsHtml}
+                </div>
+                <div id="restructureTabContent">
+                    <div class="loading-spinner">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        Loading tab content...
+                    </div>
+                </div>
+            `;
+
+            loadRestructureData();
+        }
+
+        function switchRestructureTab(tabId) {
+            currentRestructureTab = tabId;
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tabId);
+            });
+
+            loadRestructureTabContent(tabId);
+        }
+
+        async function loadRestructureData() {
+            try {
+                const [workload, skills, models, publication, listA, listB, listC] = await Promise.all([
+                    callAPI('getWorkload', {}),
+                    callAPI('getSkills', {}),
+                    callAPI('getModels', {}),
+                    callAPI('getAllPublication', {}),
+                    callAPI('getListA', {}),
+                    callAPI('getListB', {}),
+                    callAPI('getListC', {})
+                ]);
+
+                restructureData = {
+                    workload: workload.success ? workload.data : [],
+                    skills: skills.success ? skills.data : [],
+                    models: models.success ? models.data : {},
+                    publication: publication.success ? publication.data : {},
+                    listA: listA.success ? listA.data : {},
+                    listB: listB.success ? listB.data : {},
+                    listC: listC.success ? listC.data : {}
+                };
+
+                loadRestructureTabContent(currentRestructureTab);
+
+            } catch(error) {
+                console.error('Error loading restructure data:', error);
+                showToast('Error loading data: ' + error.message, 'error');
+            }
+        }
+
+        function loadRestructureTabContent(tabId) {
+            const container = document.getElementById('restructureTabContent');
+            const isAdmin = loggedInUser && loggedInUser.role === 'Admin';
+
+            if (tabId.startsWith('pub_')) {
+                const unit = tabId.replace('pub_', '');
+                renderPublicationForICDHead(container, unit);
+                return;
+            }
+
+            switch (tabId) {
+                case 'workload':
+                    renderWorkloadTab(container);
+                    break;
+                case 'skills':
+                    renderSkillsTab(container);
+                    break;
+                case 'model-a':
+                    renderModelTab(container, 'A', 'Centralised Pagination by ICD (Existing Process)');
+                    break;
+                case 'model-b':
+                    renderModelTab(container, 'B', 'Automated Pagination by ICD');
+                    break;
+                case 'model-c':
+                    renderModelTab(container, 'C', 'Automated Pagination by Editorial');
+                    break;
+                case 'publications':
+                    renderAllPublicationsTab(container);
+                    break;
+                case 'list-a':
+                    renderListTab(container, 'listA', 'List-Model-A');
+                    break;
+                case 'list-b':
+                    renderListTab(container, 'listB', 'List-Model-B');
+                    break;
+                case 'list-c':
+                    renderListTab(container, 'listC', 'List-Model-C');
+                    break;
+                default:
+                    container.innerHTML = '<div class="no-data"><i class="fa fa-file"></i>Select a tab</div>';
+            }
+        }
+
+        // ============================================================
+        // RENDER WORKLOAD TAB
+        // ============================================================
+        function renderWorkloadTab(container) {
+            const data = restructureData.workload || [];
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="no-data"><i class="fa fa-database"></i>No workload data available</div>';
+                return;
+            }
+
+            const headers = Object.keys(data[0] || {});
+
+            let html = `
+                <div class="section-header">
+                    <h3><i class="fa fa-tasks"></i> Workload by Unit</h3>
+                    <span style="font-size:13px;color:#888;">Total Units: ${data.length}</span>
+                </div>
+                <div class="table-responsive-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                ${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            data.forEach(row => {
+                html += '<tr>';
+                headers.forEach(h => {
+                    const val = row[h] !== undefined && row[h] !== null ? row[h] : '';
+                    html += `<td>${escapeHtml(String(val))}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        // RENDER SKILLS TAB
+        // ============================================================
+        function renderSkillsTab(container) {
+            const data = restructureData.skills || [];
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="no-data"><i class="fa fa-database"></i>No skills data available</div>';
+                return;
+            }
+
+            let totalNews = 0,
+                totalCreative = 0,
+                totalEventAdvt = 0,
+                totalExperts = 0;
+            let totalNotice = 0,
+                totalPhoto = 0,
+                totalPDF = 0;
+
+            data.forEach(row => {
+                totalNews += row.Normal_Page_Designer || 0;
+                totalCreative += row.Creative_Page_Designer || 0;
+                totalEventAdvt += row.Event_Advt_Designer || 0;
+                totalExperts += row.Versatile || 0;
+                totalNotice += row.Notice_Display_Ad || 0;
+                totalPhoto += row.Photo_Editor || 0;
+                totalPDF += row.PDF_Maker || 0;
+            });
+
+            const headers = ['Unit', 'Total', 'News Pages', 'Creative Pages',
+                'Event/Advt', 'Experts', 'Notice/Display Ad', 'Photo Editor', 'PDF Maker'
+            ];
+
+            let html = `
+                <div class="section-header">
+                    <h3><i class="fa fa-tags"></i> Skills Distribution</h3>
+                    <div class="summary-totals">
+                        <span>📰 News Pages: <strong>${totalNews}</strong></span>
+                        <span>🎨 Creative Pages: <strong>${totalCreative}</strong></span>
+                        <span>🎪 Event/Advt: <strong>${totalEventAdvt}</strong></span>
+                        <span>⭐ Experts: <strong>${totalExperts}</strong></span>
+                        <span>📋 Notice/Display Ad: <strong>${totalNotice}</strong></span>
+                        <span>📷 Photo Editor: <strong>${totalPhoto}</strong></span>
+                        <span>📄 PDF Maker: <strong>${totalPDF}</strong></span>
+                    </div>
+                </div>
+                <div class="table-responsive-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                ${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            data.forEach(row => {
+                html += '<tr>';
+                html += `<td>${escapeHtml(row.Unit || '')}</td>`;
+                html += `<td>${row.Total || 0}</td>`;
+                html += `<td>${row.Normal_Page_Designer || 0}</td>`;
+                html += `<td>${row.Creative_Page_Designer || 0}</td>`;
+                html += `<td>${row.Event_Advt_Designer || 0}</td>`;
+                html += `<td>${row.Versatile || 0}</td>`;
+                html += `<td>${row.Notice_Display_Ad || 0}</td>`;
+                html += `<td>${row.Photo_Editor || 0}</td>`;
+                html += `<td>${row.PDF_Maker || 0}</td>`;
+                html += '</tr>';
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        // RENDER MODEL TAB
+        // ============================================================
+        function renderModelTab(container, modelType, title) {
+            const models = restructureData.models || {};
+            const data = models[modelType] || [];
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="no-data"><i class="fa fa-database"></i>No model data available</div>';
+                return;
+            }
+
+            let totalPD = 0,
+                totalADVT = 0,
+                totalReliever = 0,
+                totalEvent = 0,
+                totalOther = 0;
+
+            data.forEach(row => {
+                totalPD += row['Page Designer'] || 0;
+                totalADVT += row['ADVT'] || 0;
+                totalReliever += row['Reliever'] || 0;
+                totalEvent += row['Event'] || 0;
+                totalOther += row['Other'] || 0;
+            });
+
+            const grandTotal = totalPD + totalADVT + totalReliever + totalEvent + totalOther;
+            const headers = Object.keys(data[0] || {});
+
+            let html = `
+                <div class="section-header">
+                    <h3><i class="fa fa-cubes"></i> ${escapeHtml(title)} - <span style="color:#1a3a6b;font-weight:700;">${grandTotal}</span></h3>
+                    <div class="summary-totals">
+                        <span>📐 Page Designer: <strong>${totalPD}</strong></span>
+                        <span>📢 ADVT: <strong>${totalADVT}</strong></span>
+                        <span>🔄 Reliever: <strong>${totalReliever}</strong></span>
+                        <span>🎪 Event: <strong>${totalEvent}</strong></span>
+                        <span>📋 Other: <strong>${totalOther}</strong></span>
+                    </div>
+                </div>
+                <div class="table-responsive-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                ${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            data.forEach(row => {
+                html += '<tr>';
+                headers.forEach(h => {
+                    const val = row[h] !== undefined && row[h] !== null ? row[h] : '';
+                    html += `<td>${val}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        // RENDER ALL PUBLICATIONS TAB
+        // ============================================================
+        function renderAllPublicationsTab(container) {
+            const data = restructureData.publication || {};
+            const units = Object.keys(data);
+
+            if (!units || units.length === 0) {
+                container.innerHTML = '<div class="no-data"><i class="fa fa-newspaper-o"></i>No publication data available</div>';
+                return;
+            }
+
+            let grandTotalPages = 0,
+                grandTotalFresh = 0,
+                grandTotalAlter = 0;
+            units.forEach(unit => {
+                const unitData = data[unit] || [];
+                unitData.forEach(row => {
+                    grandTotalPages += row.Total_Pages || 0;
+                    grandTotalFresh += row.Fresh_Pagination || 0;
+                    grandTotalAlter += row.Alter_Pagination || 0;
+                });
+            });
+
+            let html = `
+                <div class="section-header">
+                    <h3><i class="fa fa-newspaper-o"></i> All Publications by Unit</h3>
+                    <div class="totals-box">
+                        <span>📄 Total Pages: <span class="num">${grandTotalPages}</span></span>
+                        <span>🆕 Fresh: <span class="num">${grandTotalFresh}</span></span>
+                        <span>🔄 Alter: <span class="num">${grandTotalAlter}</span></span>
+                    </div>
+                </div>
+            `;
+
+            units.sort().forEach(unit => {
+                const unitData = data[unit] || [];
+                if (unitData.length === 0) return;
+
+                let totalPages = 0,
+                    totalFresh = 0,
+                    totalAlter = 0;
+                unitData.forEach(row => {
+                    totalPages += row.Total_Pages || 0;
+                    totalFresh += row.Fresh_Pagination || 0;
+                    totalAlter += row.Alter_Pagination || 0;
+                });
+
+                const unitId = 'pub_unit_' + unit.replace(/[^a-zA-Z0-9]/g, '_');
+
+                html += `
+                    <div class="unit-publication">
+                        <div class="unit-header" onclick="togglePublication('${unitId}')">
+                            <span>
+                                <i class="fa fa-chevron-right pub-collapse-icon" id="${unitId}_icon"></i>
+                                ${escapeHtml(unit)}
+                            </span>
+                            <div class="unit-totals">
+                                <span>📄 Total: <span class="num">${totalPages}</span></span>
+                                <span>🆕 Fresh: <span class="num">${totalFresh}</span></span>
+                                <span>🔄 Alter: <span class="num">${totalAlter}</span></span>
+                            </div>
+                        </div>
+                        <div class="unit-body" id="${unitId}">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Edition</th>
+                                        <th>Editorial Content Ready</th>
+                                        <th>Page Design & PDF Slot</th>
+                                        <th>Total Pages</th>
+                                        <th>Fresh</th>
+                                        <th>Alter</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+
+                unitData.forEach(row => {
+                    html += `
+                        <tr>
+                            <td><strong>${escapeHtml(row.Edition || '')}</strong></td>
+                            <td>${escapeHtml(row.Editorial_Content_Ready || '')}</td>
+                            <td>${escapeHtml(row.Page_Design_PDF_Slot || '')}</td>
+                            <td>${row.Total_Pages || 0}</td>
+                            <td>${row.Fresh_Pagination || 0}</td>
+                            <td>${row.Alter_Pagination || 0}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                                </tbody>
+                                <tfoot>
+                                    <tr class="total-row">
+                                        <th>TOTAL</th>
+                                        <td></td>
+                                        <td></td>
+                                        <td>${totalPages}</td>
+                                        <td>${totalFresh}</td>
+                                        <td>${totalAlter}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function togglePublication(unitId) {
+            const body = document.getElementById(unitId);
+            const icon = document.getElementById(unitId + '_icon');
+            if (body) {
+                body.classList.toggle('open');
+                if (icon) {
+                    icon.classList.toggle('open');
+                }
+            }
+        }
+
+        // ============================================================
+        // RENDER PUBLICATION FOR ICD HEAD
+        // ============================================================
+        function renderPublicationForICDHead(container, unit) {
+            const data = restructureData.publication || {};
+            const unitData = data[unit] || [];
+
+            if (!unitData || unitData.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <i class="fa fa-newspaper-o"></i>
+                        No publication data available for ${escapeHtml(unit)}
+                    </div>
+                `;
+                return;
+            }
+
+            let totalPages = 0,
+                totalFresh = 0,
+                totalAlter = 0;
+            unitData.forEach(row => {
+                totalPages += row.Total_Pages || 0;
+                totalFresh += row.Fresh_Pagination || 0;
+                totalAlter += row.Alter_Pagination || 0;
+            });
+
+            if (!publicationChanges[unit]) {
+                publicationChanges[unit] = {};
+            }
+
+            let html = `
+                <div class="section-header">
+                    <h3><i class="fa fa-newspaper-o"></i> Publication: ${escapeHtml(unit)}</h3>
+                    <div class="totals-box">
+                        <span>📄 Total Pages: <span class="num">${totalPages}</span></span>
+                        <span>🆕 Fresh: <span class="num">${totalFresh}</span></span>
+                        <span>🔄 Alter: <span class="num">${totalAlter}</span></span>
+                    </div>
+                </div>
+                <div class="table-responsive-wrapper">
+                    <table class="data-table" id="pubTable_${escapeHtml(unit)}">
+                        <thead>
+                            <tr>
+                                <th>Edition</th>
+                                <th>Editorial Content Ready</th>
+                                <th>Page Design & PDF Slot</th>
+                                <th>Total Pages</th>
+                                <th>Fresh</th>
+                                <th>Alter</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            unitData.forEach((row, index) => {
+                const rowId = 'row_' + index;
+                const editorialVal = row.Editorial_Content_Ready || '';
+                const designSlotVal = row.Page_Design_PDF_Slot || '';
+
+                const changes = publicationChanges[unit] || {};
+                const rowChanges = changes[rowId] || {};
+                const editorialChanged = rowChanges.editorial !== undefined && rowChanges.editorial !== editorialVal;
+                const slotChanged = rowChanges.slot !== undefined && rowChanges.slot !== designSlotVal;
+
+                html += `
+                    <tr id="${rowId}">
+                        <td><strong>${escapeHtml(row.Edition || '')}</strong></td>
+                        <td>
+                            <input type="text" class="editable-input text-input ${editorialChanged ? 'changed' : ''}" 
+                                   value="${escapeHtml(editorialVal)}" 
+                                   data-unit="${escapeHtml(unit)}" 
+                                   data-row="${rowId}" 
+                                   data-field="editorial"
+                                   onchange="onPublicationChange('${escapeHtml(unit)}', '${rowId}', 'editorial', this.value)"
+                                   placeholder="Editorial Content Ready">
+                        </td>
+                        <td>
+                            <input type="text" class="editable-input text-input ${slotChanged ? 'changed' : ''}" 
+                                   value="${escapeHtml(designSlotVal)}" 
+                                   data-unit="${escapeHtml(unit)}" 
+                                   data-row="${rowId}" 
+                                   data-field="slot"
+                                   onchange="onPublicationChange('${escapeHtml(unit)}', '${rowId}', 'slot', this.value)"
+                                   placeholder="Page Design & PDF Slot">
+                        </td>
+                        <td>${row.Total_Pages || 0}</td>
+                        <td>${row.Fresh_Pagination || 0}</td>
+                        <td>${row.Alter_Pagination || 0}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <th>TOTAL</th>
+                                <td></td>
+                                <td></td>
+                                <td>${totalPages}</td>
+                                <td>${totalFresh}</td>
+                                <td>${totalAlter}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="save-area">
+                    <button class="save-btn" id="savePubBtn_${escapeHtml(unit)}" onclick="savePublication('${escapeHtml(unit)}')">
+                        <i class="fa fa-save"></i> Save All Changes
+                    </button>
+                    <span class="save-status" id="pubStatus_${escapeHtml(unit)}"></span>
+                    <span style="font-size:12px;color:#888;margin-left:auto;" id="changeCount_${escapeHtml(unit)}">No changes</span>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            updateChangeStatus(unit);
+        }
+
+        function onPublicationChange(unit, rowId, field, value) {
+            if (!publicationChanges[unit]) {
+                publicationChanges[unit] = {};
+            }
+            if (!publicationChanges[unit][rowId]) {
+                publicationChanges[unit][rowId] = {};
+            }
+            publicationChanges[unit][rowId][field] = value;
+            publicationChanges[unit][rowId]['changed'] = true;
+
+            const input = document.querySelector(`[data-unit="${unit}"][data-row="${rowId}"][data-field="${field}"]`);
+            if (input) {
+                input.classList.add('changed');
+            }
+
+            updateChangeStatus(unit);
+        }
+
+        function updateChangeStatus(unit) {
+            const changes = publicationChanges[unit] || {};
+            let count = 0;
+            for (let rowId in changes) {
+                if (changes[rowId].changed) count++;
+            }
+
+            const statusEl = document.getElementById('changeCount_' + unit);
+            if (statusEl) {
+                statusEl.textContent = count > 0 ? `${count} row(s) changed` : 'No changes';
+                statusEl.style.color = count > 0 ? '#ff9800' : '#888';
+            }
+
+            const saveBtn = document.getElementById('savePubBtn_' + unit);
+            if (saveBtn) {
+                saveBtn.disabled = count === 0;
+                saveBtn.classList.toggle('saved', count === 0);
+            }
+        }
+
+        async function savePublication(unit) {
+            const changes = publicationChanges[unit] || {};
+            const hasChanges = Object.keys(changes).some(key => changes[key].changed);
+
+            if (!hasChanges) {
+                showToast('No changes to save', 'info');
+                return;
+            }
+
+            if (isSaving) return;
+            isSaving = true;
+
+            const saveBtn = document.getElementById('savePubBtn_' + unit);
+            const statusEl = document.getElementById('pubStatus_' + unit);
+
+            saveBtn.disabled = true;
+            statusEl.className = 'save-status show saving';
+            statusEl.textContent = '⏳ Saving...';
+
+            const rowsToSave = [];
+            for (let rowId in changes) {
+                if (changes[rowId].changed) {
+                    const table = document.getElementById('pubTable_' + unit);
+                    const row = table.querySelector('#' + rowId);
+                    if (row) {
+                        const edition = row.querySelector('td:first-child strong')?.textContent || '';
+                        rowsToSave.push({
+                            edition: edition,
+                            editorial: changes[rowId].editorial || '',
+                            slot: changes[rowId].slot || ''
+                        });
+                    }
+                }
+            }
+
+            try {
+                const result = await callAPI('savePublication', {
+                    unit: unit,
+                    rows: rowsToSave
+                });
+
+                if (result.success) {
+                    publicationChanges[unit] = {};
+                    updateChangeStatus(unit);
+
+                    document.querySelectorAll(`[data-unit="${unit}"]`).forEach(input => {
+                        input.classList.remove('changed');
+                    });
+
+                    statusEl.className = 'save-status show saved';
+                    statusEl.textContent = '✓ Saved successfully';
+                    showToast('Publication data saved successfully!', 'success');
+
+                    setTimeout(() => {
+                        statusEl.className = 'save-status';
+                    }, 3000);
+                } else {
+                    statusEl.className = 'save-status show error';
+                    statusEl.textContent = '✗ Error: ' + (result.error || 'Unknown error');
+                    showToast('Error saving: ' + (result.error || 'Unknown error'), 'error');
+                }
+            } catch(error) {
+                statusEl.className = 'save-status show error';
+                statusEl.textContent = '✗ Error: ' + error.message;
+                showToast('Error saving: ' + error.message, 'error');
+            }
+
+            isSaving = false;
+            saveBtn.disabled = false;
+        }
+
+        // ============================================================
+        // RENDER LIST TAB
+        // ============================================================
+        function renderListTab(container, listKey, listTitle) {
+            const data = restructureData[listKey] || {};
+            const units = Object.keys(data);
+
+            if (!units || units.length === 0) {
+                container.innerHTML =
+                    `<div class="no-data"><i class="fa fa-users"></i>No employee data available for ${listTitle}</div>`;
+                return;
+            }
+
+            let grandExisting = 0,
+                grandProposed = 0,
+                grandEliminated = 0;
+            units.forEach(unit => {
+                const unitData = data[unit] || [];
+                unitData.forEach(emp => {
+                    grandExisting++;
+                    if (emp.Continue && emp.Continue.toLowerCase() === 'yes') {
+                        grandProposed++;
+                    } else if (emp.Continue && emp.Continue.toLowerCase() === 'no') {
+                        grandEliminated++;
+                    }
+                });
+            });
+
+            if (listKey === 'listA') {
+                grandExisting = grandExisting - 1;
+            }
+
+            let html = `
+                <div class="section-header">
+                    <h3><i class="fa fa-users"></i> ${escapeHtml(listTitle)} - Employees by Unit</h3>
+                    <div class="totals-box">
+                        <span>👥 Existing: <span class="num">${grandExisting}</span></span>
+                        <span>✅ Proposed: <span class="num">${grandProposed}</span></span>
+                        <span>❌ Eliminated: <span class="num">${grandEliminated}</span></span>
+                    </div>
+                </div>
+            `;
+
+            units.sort().forEach(unit => {
+                const unitData = data[unit] || [];
+                if (unitData.length === 0) return;
+
+                const existing = [];
+                const proposed = [];
+                const eliminated = [];
+
+                unitData.forEach(emp => {
+                    existing.push(emp);
+                    if (emp.Continue && emp.Continue.toLowerCase() === 'yes') {
+                        proposed.push(emp);
+                    } else if (emp.Continue && emp.Continue.toLowerCase() === 'no') {
+                        eliminated.push(emp);
+                    }
+                });
+
+                const sortByName = (arr) => arr.sort((a, b) => (a.Name || '').localeCompare(b.Name || ''));
+                sortByName(existing);
+                sortByName(proposed);
+                sortByName(eliminated);
+
+                const unitExisting = existing.length;
+                const unitProposed = proposed.length;
+                const unitEliminated = eliminated.length;
+
+                const maxRows = Math.max(existing.length, proposed.length, eliminated.length);
+                const unitId = 'emp_unit_' + listKey + '_' + unit.replace(/[^a-zA-Z0-9]/g, '_');
+
+                html += `
+                    <div class="unit-employee">
+                        <div class="unit-header" onclick="toggleEmployeeUnit('${unitId}')">
+                            <span>
+                                <i class="fa fa-chevron-right pub-collapse-icon" id="${unitId}_icon"></i>
+                                ${escapeHtml(unit)}
+                            </span>
+                            <div class="unit-totals">
+                                <span>👥 Existing: <span class="num">${unitExisting}</span></span>
+                                <span>✅ Proposed: <span class="num">${unitProposed}</span></span>
+                                <span>❌ Eliminated: <span class="num">${unitEliminated}</span></span>
+                            </div>
+                        </div>
+                        <div class="unit-body" id="${unitId}">
+                            <table class="data-table employee-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:33.33%;background:#28a745;color:white;">Existing</th>
+                                        <th style="width:33.33%;background:#17a2b8;color:white;">Proposed</th>
+                                        <th style="width:33.33%;background:#dc3545;color:white;">Eliminated</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+
+                for (let i = 0; i < maxRows; i++) {
+                    const empExisting = existing[i] || null;
+                    const empProposed = proposed[i] || null;
+                    const empEliminated = eliminated[i] || null;
+
+                    const getNameWithColor = (emp) => {
+                        if (!emp) return '';
+                        const isCNF = emp.Type && emp.Type.toUpperCase() === 'CNF';
+                        const name = escapeHtml(emp.Name || '');
+                        return isCNF ? `<span class="text-cnf">${name}</span>` : name;
+                    };
+
+                    html += `
+                        <tr>
+                            <td>${getNameWithColor(empExisting)}</td>
+                            <td>${getNameWithColor(empProposed)}</td>
+                            <td>${getNameWithColor(empEliminated)}</td>
+                        </tr>
+                    `;
+                }
+
+                html += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function toggleEmployeeUnit(unitId) {
+            const body = document.getElementById(unitId);
+            const icon = document.getElementById(unitId + '_icon');
+            if (body) {
+                body.classList.toggle('open');
+                if (icon) {
+                    icon.classList.toggle('open');
+                }
+            }
+        }
+
+        // ============================================================
+        // HELPER FUNCTIONS
+        // ============================================================
+        function getExpertiseDescription(value) {
+            const option = EXPERTISE_OPTIONS.find(opt => opt.value === value);
+            return option ? option.description : '';
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function getRoleBadgeClass(role) {
+            if (!role) return 'unknown';
+            const r = role.toLowerCase();
+            if (r === 'admin') return 'admin';
+            if (r === 'icd head') return 'icd-head';
+            if (r === 'employee') return 'employee';
+            return 'unknown';
+        }
+
+        function getTypeBadgeClass(type) {
+            if (!type) return '';
+            const t = type.toUpperCase();
+            if (t === 'FTA') return 'fta';
+            if (t === 'VOU') return 'vou';
+            if (t === 'CNF') return 'cnf';
+            return '';
+        }
+
+        function showToast(message, type) {
+            const existing = document.querySelector('.custom-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'custom-toast ' + (type || 'info');
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // ============================================================
+        // ENTER KEY SUPPORT
+        // ============================================================
+        document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('loginEmail').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+        });
+
+        // ============================================================
+        // CHECK SESSION
+        // ============================================================
+        (function() {
+            const userData = sessionStorage.getItem('icd_user');
+            if (userData) {
+                try {
+                    loggedInUser = JSON.parse(userData);
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('dashboardContent').style.display = 'block';
+                    initDashboard();
+                } catch(e) {
+                    // Invalid session, show login
+                }
+            }
+        })();
+
+        console.log('✅ ICD Unified Dashboard loaded!');
+        console.log('📡 API URL:', API_URL);
+    </script>
+</body>
+</html>
