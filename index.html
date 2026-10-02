@@ -95,6 +95,7 @@
         .checkbox-group {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             margin-bottom: 24px;
         }
@@ -736,7 +737,7 @@
             </div>
             <div class="checkbox-group">
                 <input type="checkbox" id="stayLoggedIn">
-                <label>Stay Logged In</label>
+                <label for="stayLoggedIn">Stay Logged In</label>
             </div>
             <button class="btn btn-primary" id="loginBtn">LOGIN</button>
             <div id="loginError" class="error-message"></div>
@@ -911,6 +912,7 @@
         let currentUserShortName = '';
         let currentUserFullName = '';
         let currentUserEmail = null;
+        let currentUserCity = '';   // ✅ NEW: tracks the logged-in user's own city
         let allUsers = [];
         let currentExceptions = [];
         let currentDate = new Date();
@@ -993,6 +995,23 @@
         
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
+        }
+        
+        // ✅ NEW: Compute visible city tabs based on user's own city
+        function getVisibleCities() {
+            const allCities = ['Kolhapur', 'Sangli', 'Satara', 'Kokan'];
+            const userCity = currentUserCity;
+
+            if (!userCity || userCity === 'Kolhapur') {
+                // Kolhapur users OR unknown/empty → see all 4 tabs
+                return allCities;
+            }
+            if (allCities.includes(userCity)) {
+                // Non-Kolhapur users → own city first, then Kolhapur
+                return [userCity, 'Kolhapur'];
+            }
+            // Unknown city → fall back to all
+            return allCities;
         }
         
         // Update top bar with user name
@@ -1597,10 +1616,17 @@
             }
         };
         
-        // Render city filters
+        // ✅ UPDATED: Render city filters using getVisibleCities()
         function renderCityFilters() {
             const container = document.getElementById('cityFilters');
-            container.innerHTML = fixedCities.map(city => `
+            const visibleCities = getVisibleCities();
+
+            // Safety: if currently selected city is not visible, switch to first visible
+            if (!visibleCities.includes(selectedCity)) {
+                selectedCity = visibleCities[0];
+            }
+
+            container.innerHTML = visibleCities.map(city => `
                 <button class="city-btn ${city === selectedCity ? 'active' : ''}" data-city="${city}">${city}</button>
             `).join('');
             
@@ -1665,7 +1691,7 @@
             });
         }
         
-        // Login handler with proper persistence
+        // ✅ UPDATED: Login handler — now also sets currentUserCity
         async function handleLogin() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
@@ -1680,12 +1706,10 @@
             try {
                 // Set persistence based on "Stay Logged In" checkbox
                 if (stayLoggedIn) {
-                    // LOCAL persistence - stays logged in even after browser restart
                     await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
                     localStorage.setItem('stayLoggedIn', 'true');
                     localStorage.setItem('userEmail', email);
                 } else {
-                    // SESSION persistence - logged out when tab/window is closed
                     await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
                     localStorage.removeItem('stayLoggedIn');
                     localStorage.removeItem('userEmail');
@@ -1700,8 +1724,17 @@
                     currentUserRole = userData.role || 'user';
                     currentUserShortName = userData.shortName || '';
                     currentUserFullName = userData.fullName || email;
+                    currentUserCity = userData.city || '';   // ✅ NEW
                 } else {
                     currentUserFullName = email;
+                    currentUserCity = '';
+                }
+                
+                // ✅ Auto-select user's own city (unless Kolhapur/unknown)
+                if (currentUserCity && currentUserCity !== 'Kolhapur') {
+                    selectedCity = currentUserCity;
+                } else {
+                    selectedCity = 'Kolhapur';
                 }
                 
                 updateTopBar();
@@ -1715,6 +1748,7 @@
                 
                 await loadUsers();
                 await loadSettings();
+                renderCityFilters();   // ✅ render tabs with the correct visible list
                 await refreshData();
                 
             } catch (error) {
@@ -1725,11 +1759,17 @@
             }
         }
         
-        // Logout handler
+        // ✅ UPDATED: Logout handler — resets user state
         async function handleLogout() {
             await auth.signOut();
             localStorage.removeItem('stayLoggedIn');
             localStorage.removeItem('userEmail');
+            currentUserCity = '';
+            currentUserRole = 'user';
+            currentUserShortName = '';
+            currentUserFullName = '';
+            currentUserEmail = null;
+            selectedCity = 'Kolhapur';
             document.getElementById('loginContainer').style.display = 'flex';
             document.getElementById('appContainer').style.display = 'none';
         }
@@ -1767,12 +1807,11 @@
             });
         }
         
-        // Check for existing session (only for LOCAL persistence)
+        // ✅ UPDATED: checkExistingSession — now also sets currentUserCity
         async function checkExistingSession() {
             const stayLoggedIn = localStorage.getItem('stayLoggedIn') === 'true';
             const savedEmail = localStorage.getItem('userEmail');
             
-            // Only restore session if "Stay Logged In" was checked
             if (stayLoggedIn && savedEmail) {
                 const user = auth.currentUser;
                 if (user && user.email === savedEmail) {
@@ -1782,9 +1821,19 @@
                         currentUserRole = userDoc.data().role || 'user';
                         currentUserShortName = userDoc.data().shortName || '';
                         currentUserFullName = userDoc.data().fullName || savedEmail;
+                        currentUserCity = userDoc.data().city || '';   // ✅ NEW
                     } else {
                         currentUserFullName = savedEmail;
+                        currentUserCity = '';
                     }
+                    
+                    // ✅ Auto-select user's own city
+                    if (currentUserCity && currentUserCity !== 'Kolhapur') {
+                        selectedCity = currentUserCity;
+                    } else {
+                        selectedCity = 'Kolhapur';
+                    }
+                    
                     updateTopBar();
                     document.getElementById('loginContainer').style.display = 'none';
                     document.getElementById('appContainer').style.display = 'flex';
@@ -1793,6 +1842,7 @@
                     }
                     await loadUsers();
                     await loadSettings();
+                    renderCityFilters();   // ✅ render tabs correctly
                     await refreshData();
                     return true;
                 }
@@ -1800,20 +1850,18 @@
             return false;
         }
         
-        // Initialize
+        // ✅ UPDATED: init — onAuthStateChanged also sets currentUserCity
         async function init() {
             setupEventListeners();
             renderCityFilters();
             
             // Set default persistence to SESSION (logout on tab close)
-            // This is the default behavior when "Stay Logged In" is not checked
             await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
             
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     const restored = await checkExistingSession();
                     if (!restored) {
-                        // User logged in but no LOCAL persistence flag - treat as SESSION
                         document.getElementById('loginContainer').style.display = 'none';
                         document.getElementById('appContainer').style.display = 'flex';
                         currentUserEmail = user.email;
@@ -1822,15 +1870,26 @@
                             currentUserRole = userDoc.data().role || 'user';
                             currentUserShortName = userDoc.data().shortName || '';
                             currentUserFullName = userDoc.data().fullName || user.email;
+                            currentUserCity = userDoc.data().city || '';   // ✅ NEW
                         } else {
                             currentUserFullName = user.email;
+                            currentUserCity = '';
                         }
+                        
+                        // ✅ Auto-select user's own city
+                        if (currentUserCity && currentUserCity !== 'Kolhapur') {
+                            selectedCity = currentUserCity;
+                        } else {
+                            selectedCity = 'Kolhapur';
+                        }
+                        
                         updateTopBar();
                         if (currentUserRole === 'hod' || currentUserRole === 'admin') {
                             document.getElementById('propertiesBtn').style.display = 'inline-block';
                         }
                         await loadUsers();
                         await loadSettings();
+                        renderCityFilters();   // ✅ render tabs correctly
                         await refreshData();
                     }
                 }
